@@ -5,15 +5,15 @@ const posts = [
     id: 1,
     date: "July 25, 2025",
     tag: "Health Benefits",
-    title: "Best Time to Eat Makhana for Weight Loss",
-    desc: "Want to lose weight without giving up snacks? Learn when to eat makhana to burn more fat, stay full longer, and reduce cravings the healthy way.",
+    title: "Best Time to Eat neurafit for Weight Loss",
+    desc: "Want to lose weight without giving up ? Learn when to eat  to burn more fat, stay full longer, and reduce cravings the healthy way.",
     readTime: "4 min read",
   },
   {
     id: 2,
     date: "July 28, 2025",
     tag: "Nutrition",
-    title: "Flavored Makhana: Tasty Doesn't Have to Be Unhealthy",
+    title: "Flavored Neurafit: Tasty Doesn't Have to Be Unhealthy",
     desc: "Think healthy snacks can't be tasty? Think again. Discover how flavored makhana delivers crunch and bold flavors — without preservatives, frying, or guilt.",
     readTime: "5 min read",
   },
@@ -21,24 +21,24 @@ const posts = [
     id: 3,
     date: "August 1, 2025",
     tag: "Wellness",
-    title: "Why Makhana Is the Perfect Fasting Snack",
-    desc: "Fasting during Navratri or Ekadashi? Discover why roasted makhana is the best snack to stay energized, light, and sattvic — without breaking your fast.",
+    title: "Why neurafit nutirtion Is the Perfect Fasting  growth",
+    desc: "Fasting during Navratri or Ekadashi? Discover why neurafit nutrition is the best  to stay energized, light, and sattvic — without breaking your fast.",
     readTime: "3 min read",
   },
   {
     id: 4,
     date: "August 5, 2025",
     tag: "Recipes",
-    title: "Is Makhana Good for Kids? Let's Find Out",
-    desc: "Looking for a healthy school snack for your kids? Discover why roasted makhana is one of the safest, crunchiest, and most nutritious options for children of all ages.",
+    title: "Is neurafit? Let's Find Out",
+    desc: "Looking for ? Discover why a is one of the safest, and most nutritious options for  of all ages.",
     readTime: "4 min read",
   },
   {
     id: 5,
     date: "July 20, 2025",
     tag: "Nutrition",
-    title: "Makhana vs Popcorn: Which Snack Is Healthier?",
-    desc: "Can't decide between makhana and popcorn? Here's a clear breakdown of which snack is better for weight loss, digestion, energy, and long-term health.",
+    title: " vs: Which  Is Healthier?",
+    desc: "Can't decide between and ? Here's a clear breakdown of which  is better for weight loss, digestion, energy, and long-term health.",
     readTime: "6 min read",
   },
 ];
@@ -82,8 +82,8 @@ export default function Blog() {
           <span className="blog-hero__tag">Our Blog</span>
           <h1 className="blog-hero__title">Discover Insights & Stories</h1>
           <p className="blog-hero__desc">
-            Recipes, health tips, and stories from the world of makhana
-            and healthy snacking.
+            Recipes, health tips, and stories from the world of 
+            and healthy .
           </p>
         </div>
       </div>
@@ -137,8 +137,8 @@ export default function Blog() {
                           This is a preview of the full article. The complete post
                           covers everything you need to know about <strong>{post.title.toLowerCase()}</strong>.
                           Stay tuned for the full content coming soon on our website at{" "}
-                          <a href="https://www.naturalpuff.com" target="_blank" rel="noopener noreferrer">
-                            naturalpuff.com
+                          <a href="https://www.neurafit.fit" target="_blank" rel="noopener noreferrer">
+                            neurafit.fit
                           </a>.
                         </p>
                       </div>
