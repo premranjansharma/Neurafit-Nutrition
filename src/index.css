@@ -1,0 +1,359 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+/* ===== SALES PAGE ===== */
+.sales-page {
+  font-family: sans-serif;
+}
+
+/* OUTER WRAPPERS — control background full width */
+.sales-outer {
+  width: 100%;
+  padding: 4rem 2rem;
+  box-sizing: border-box;
+}
+.sales-outer--cream {
+  background: #f7f6f0;
+}
+
+/* INNER SECTION — controls max-width and centering */
+.sales-section {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.sales-section__head {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+.sales-section__head h2 {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: #1a2e1a;
+  font-family: Georgia, serif;
+  margin: 0 0 8px;
+}
+.sales-section__head p {
+  color: #7a8c7a;
+  font-size: 15px;
+  margin: 0;
+}
+
+/* HERO */
+.sales-hero {
+  background: #1a2e1a;
+  color: #fff;
+  padding: 5rem 2rem;
+  text-align: center;
+}
+.sales-hero__inner {
+  max-width: 700px;
+  margin: 0 auto;
+}
+.sales-tag {
+  display: inline-block;
+  background: rgba(159,225,203,0.2);
+  color: #9fe1cb;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.sales-hero__title {
+  font-size: 2.6rem;
+  font-weight: 700;
+  font-family: Georgia, serif;
+  margin: 0 0 1rem;
+  line-height: 1.2;
+}
+.sales-hero__desc {
+  font-size: 15px;
+  color: rgba(255,255,255,0.75);
+  margin: 0 0 2rem;
+  line-height: 1.7;
+}
+.sales-hero__btns {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* BUTTONS */
+.sales-btn {
+  display: inline-block;
+  padding: 11px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+  font-family: sans-serif;
+}
+.sales-btn--light {
+  background: #fff;
+  color: #1a2e1a;
+}
+.sales-btn--light:hover { background: #f0ede4; }
+.sales-btn--dark {
+  background: #2d5a27;
+  color: #fff;
+}
+.sales-btn--dark:hover { background: #1a3d17; }
+.sales-btn--outline {
+  background: transparent;
+  color: #fff;
+  border: 1.5px solid rgba(255,255,255,0.5);
+}
+.sales-btn--outline:hover { border-color: #fff; }
+.sales-btn--white {
+  background: #fff;
+  color: #1a2e1a;
+}
+.sales-btn--white:hover { background: #f0ede4; }
+.sales-btn--outline-white {
+  background: transparent;
+  color: #fff;
+  border: 1.5px solid rgba(255,255,255,0.5);
+}
+.sales-btn--outline-white:hover { border-color: #fff; }
+
+/* BENEFITS */
+.sales-benefits {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+.sales-benefit-card {
+  background: #fff;
+  border: 1px solid #e8e4d8;
+  border-radius: 12px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+.sales-benefit-card__icon { font-size: 2.5rem; margin-bottom: 1rem; }
+.sales-benefit-card h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a2e1a;
+  margin: 0 0 8px;
+  font-family: Georgia, serif;
+}
+.sales-benefit-card p { font-size: 13px; color: #7a8c7a; line-height: 1.6; margin: 0; }
+
+/* FORM */
+.sales-form-wrap {
+  background: #fff;
+  border: 1px solid #e8e4d8;
+  border-radius: 16px;
+  padding: 2.5rem;
+}
+.sales-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.sales-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.sales-field label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #7a8c7a;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.sales-field input,
+.sales-field select,
+.sales-field textarea {
+  padding: 10px 14px;
+  border: 1px solid #d8d4c8;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: sans-serif;
+  color: #1a2e1a;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+.sales-field input:focus,
+.sales-field select:focus,
+.sales-field textarea:focus {
+  border-color: #2d5a27;
+  box-shadow: 0 0 0 3px rgba(45,90,39,0.08);
+}
+.sales-field textarea { resize: vertical; }
+.sales-submit-btn {
+  width: 100%;
+  background: #2d5a27;
+  color: #fff;
+  border: none;
+  padding: 13px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: sans-serif;
+  transition: background 0.2s;
+}
+.sales-submit-btn:hover { background: #1a3d17; }
+.sales-error {
+  background: #fdeaea;
+  color: #b83232;
+  border: 1px solid #f0b8b8;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+.sales-success {
+  text-align: center;
+  padding: 3rem;
+  background: #fff;
+  border: 1px solid #e8e4d8;
+  border-radius: 16px;
+}
+.sales-success__icon {
+  width: 56px;
+  height: 56px;
+  background: #2d5a27;
+  color: #fff;
+  font-size: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+.sales-success h3 { font-size: 1.4rem; font-family: Georgia, serif; color: #1a2e1a; margin: 0 0 8px; }
+.sales-success p { color: #7a8c7a; font-size: 14px; }
+
+/* TEAM */
+.sales-team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  max-width: 560px;
+  margin: 0 auto;
+}
+.sales-member-card {
+  background: #fff;
+  border: 1px solid #e8e4d8;
+  border-radius: 12px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+.sales-member-card__avatar {
+  width: 60px;
+  height: 60px;
+  background: #e6f4e6;
+  color: #2d5a27;
+  font-size: 18px;
+  font-weight: 700;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+.sales-member-card h3 { font-size: 16px; font-weight: 700; color: #1a2e1a; margin: 0 0 4px; font-family: Georgia, serif; }
+.sales-member-card__role { font-size: 12px; color: #2d5a27; font-weight: 600; display: block; margin-bottom: 12px; }
+.sales-member-card__contacts p { font-size: 13px; color: #7a8c7a; margin: 4px 0; }
+
+/* INFO */
+.sales-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+.sales-info-card {
+  background: #fff;
+  border: 1px solid #e8e4d8;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+.sales-info-card h3 { font-size: 15px; font-weight: 700; color: #1a2e1a; margin: 0 0 10px; font-family: Georgia, serif; }
+.sales-info-card p { font-size: 13px; color: #7a8c7a; margin: 4px 0; line-height: 1.6; }
+
+/* TESTIMONIALS */
+.sales-testimonials {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+.sales-testimonial {
+  background: #fff;
+  border: 1px solid #e8e4d8;
+  border-radius: 12px;
+  padding: 2rem;
+}
+.sales-testimonial__text {
+  font-size: 14px;
+  color: #4a5a4a;
+  line-height: 1.7;
+  font-style: italic;
+  margin: 0 0 1.5rem;
+}
+.sales-testimonial__author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sales-testimonial__avatar {
+  width: 44px;
+  height: 44px;
+  background: #e6f4e6;
+  color: #2d5a27;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.sales-testimonial__author strong { display: block; font-size: 14px; color: #1a2e1a; }
+.sales-testimonial__author span { font-size: 12px; color: #7a8c7a; }
+
+/* CTA */
+.sales-cta {
+  background: #1a2e1a;
+  color: #fff;
+  text-align: center;
+  padding: 4rem 2rem;
+}
+.sales-cta h2 { font-size: 2rem; font-family: Georgia, serif; margin: 0 0 1rem; }
+.sales-cta p {
+  color: rgba(255,255,255,0.75);
+  font-size: 15px;
+  max-width: 560px;
+  margin: 0 auto 2rem;
+  line-height: 1.7;
+}
+.sales-cta__btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .sales-form-grid { grid-template-columns: 1fr; }
+  .sales-hero__title { font-size: 1.8rem; }
+  .sales-cta h2 { font-size: 1.5rem; }
+  .sales-form-wrap { padding: 1.5rem; }
+}
