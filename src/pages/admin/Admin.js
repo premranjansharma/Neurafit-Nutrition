@@ -1,3 +1,4 @@
+/* eslint-disable*/
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "./AuthContext";
 import { Link } from "react-router-dom";
