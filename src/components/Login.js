@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-const API = "http://localhost:5000/api";
+const API = process.env.REACT_APP_BASE_URL;
 
 export default function Login() {
   const [form, setForm] = useState({
