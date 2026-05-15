@@ -232,7 +232,7 @@ function App() {
   const [offers, setOffers] = useState([]);
 
 useEffect(() => {
-  fetch("http://localhost:5000/api/offers") // 👈 PUBLIC API
+  fetch(`${process.env.REACT_APP_BASE_URL}/api/offers`) 
     .then(res => res.json())
     .then(data => {
       if (Array.isArray(data)) {
@@ -245,10 +245,10 @@ useEffect(() => {
 const [products, setProducts] = useState([]);
 
 useEffect(() => {
-  fetch(`${process.env.REACT_APP_API_URL}/products`)
+  fetch(`${process.env.REACT_APP_BASE_URL}/products`)
     .then(res => res.json())
     .then(data => {
-      const BASE = process.env.REACT_APP_BASE_URL || "http://localhost:5000";
+      const BASE = process.env.REACT_APP_BASE_URL;
       const list = Array.isArray(data) ? data : data.products || [];
       return list.map(p => ({
         ...p,
