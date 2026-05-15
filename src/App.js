@@ -31,7 +31,7 @@ import { AuthProvider } from "./pages/admin/AuthContext";
 import "./style.css";
 import "./style1.css";
 import ravi from "./assets/ravi.jpg";
-import logo from "./assets/logo.png";
+import logo from "./assets/logo-nav.png";
 import pre1 from "./assets/pre1.jpg";
 import pre2 from "./assets/pre2.jpg";
 import pre3 from "./assets/pre3.jpg";
