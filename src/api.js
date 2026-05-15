@@ -2,7 +2,7 @@
 // ── Paste this file in src/api.js ──
 // Use these functions in your React components to call the backend
 
-const BASE = "http://localhost:5000/api";
+const BASE = `${process.env.REACT_APP_BASE_URL}/api`;
 
 const getToken      = () => localStorage.getItem("token");
 const getAdminToken = () => localStorage.getItem("adminToken");
