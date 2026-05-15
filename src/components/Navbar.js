@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
 import { FaShoppingCart } from "react-icons/fa";
-import logo from "../assets/logo-nav.png";
+import logo from "../assets/logo.png";
 
 export default function Navbar({ offers }) {
   const { cart } = useContext(CartContext);
