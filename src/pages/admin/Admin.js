@@ -4,7 +4,7 @@ import { useAuth } from "./AuthContext";
 import { Link } from "react-router-dom";
 import AdminUsers from "./AdminUsers";
 import logo from "../../assets/logo.png";
-const API = "http://localhost:5000";
+const API = process.env.REACT_APP_BASE_URL;
 
 const DUMMY_CONTENT = {
   hero:     { heading:"GODMODE ENERGY", subheading:"Unleash Power | Focus | Performance", description:"Experience next-level energy, razor-sharp focus, and unstoppable performance with GodMode by IronFuel Nutrition.", btnText:"Explore Products" },
