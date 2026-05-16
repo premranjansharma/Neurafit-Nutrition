@@ -60,9 +60,9 @@ if (!Array.isArray(products)) return <div style={{textAlign:"center",padding:"80
                   {product.images?.[0] ? (
                     <img
                src={
-              product.images?.[0]
-              ? `${process.env.REACT_APP_BASE_URL}${product.images[0]}`
-              : "/placeholder.png"
+        product.images[0].startsWith("http")
+          ? product.images[0]
+          : `${process.env.REACT_APP_BASE_URL}/${product.images[0].replace(/^\/+/, "")}`
                       }
                       alt={product.name}
                       className="products-card__img"
