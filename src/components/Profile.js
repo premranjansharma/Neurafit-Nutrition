@@ -20,7 +20,7 @@ export default function Profile() {
       return;
     }
 
-    fetch(`${API}/auth/me`, {
+    fetch(`${API}/api/auth/me`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -55,7 +55,7 @@ export default function Profile() {
       const formData = new FormData();
       formData.append("image", image);
 
-      await fetch(`${API}/auth/upload`, {
+      await fetch(`${API}/api/auth/upload`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
