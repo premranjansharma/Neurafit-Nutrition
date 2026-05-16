@@ -20,9 +20,9 @@ const values = [
 const teamMembers = [
   {
     id: 1,
-    name: "Rishav",
+    name: "Ravi",
     role: "Founder & Vision Lead",
-    image: "rishav.jpg",
+    image: "ravi.jpg",
     bio: "Drives strategy, innovation, and long-term brand vision for Neurafit Nutrition. Rishav combines business insight with a passion for fitness excellence, ensuring every decision aligns with the brand's mission to empower peak performance.",
     isFounder: true,
     founderTitle: "Rishav - Founder & Vision Lead of Neurafit Nutrition",
@@ -31,9 +31,9 @@ const teamMembers = [
   },
   {
     id: 2,
-    name: "Ravi",
+    name: "Rishav",
     role: "Co-Founder & Operations Head",
-    image: "ravi.jpg",
+    image: "rishav.jpg",
     bio: "Ensures smooth manufacturing, sourcing, and supply chain efficiency at Neurafit Nutrition. With extensive expertise in operations and logistics, Ravi guarantees that every product reaches you with the highest quality standards and reliability."
   },
   {
