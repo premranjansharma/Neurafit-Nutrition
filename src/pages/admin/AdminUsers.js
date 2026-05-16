@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 
-const API = process.env.REACT_APP_API_URL;
+const API = process.env.REACT_APP_BASE_URL + "/api";
 
 const FontLink = () => (
   <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap');`}</style>
