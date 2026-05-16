@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-// ✅ FIXED: Correct timeline with Neurafit Nutrition
+const API_BASE = process.env.REACT_APP_BASE_URL || "http://localhost:5000";
+
 const timeline = [
   { num: "1", year: "2026 – The Discovery",       desc: "In Darbhanga, Bihar, the vision of Neurafit Nutrition was born with a mission to create powerful, result-driven supplements for modern fitness needs." },
   { num: "2", year: "2026 (Mid) – The Idea is Born", desc: "Recognizing the demand for clean and effective nutrition, we laid the foundation of Neurafit Nutrition focused on strength, energy, and performance." },
@@ -16,7 +17,6 @@ const values = [
   { icon: "🔍", title: "Transparency",             desc: "We believe in complete honesty about our ingredients, formulations, and nutritional information, so you can fuel your body with confidence." },
 ];
 
-// ✅ FIXED: 3 Co-founders properly defined
 const teamMembers = [
   {
     id: 1,
@@ -45,36 +45,38 @@ const teamMembers = [
   }
 ];
 
+// ✅ Helper: image URL banana
+const getImageUrl = (image) => {
+  if (!image) return null;
+  if (image.startsWith("http")) return image;
+  return `${API_BASE}/uploads/${image}`;
+};
+
+// ✅ Helper: fallback avatar
+const getAvatarFallback = (name) =>
+  `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&size=200&background=1a1a1a&color=fff`;
+
 export default function About() {
-  // ✅ IMPROVED: Better state management
-  const [teamData, setTeamData] = useState(teamMembers);
+  const [teamData]          = useState(teamMembers); // static data — API se nahi aa raha
   const [loading, setLoading] = useState(false);
   const [content, setContent] = useState([]);
 
-  // ✅ IMPROVED: Better useEffect with error handling
   useEffect(() => {
-    // Uncomment to use API
-    
     setLoading(true);
-    fetch("http://localhost:5000/api/content/about")
-      .then(res => res.json())
-      .then(data => {
+    fetch(`${API_BASE}/api/content/about`)
+      .then((res) => res.json())
+      .then((data) => {
         setContent(data);
         setLoading(false);
       })
-      .catch(err => {
-        console.log("Error:", err);
+      .catch((err) => {
+        console.error("Content fetch error:", err);
         setLoading(false);
       });
-    
-    
-    // Using default data for now
-    setTeamData(teamMembers);
   }, []);
 
-  const getContent = (section) => {
-    return content.find(item => item.section === section)?.text || "";
-  };
+  const getContent = (section) =>
+    content.find((item) => item.section === section)?.text || "";
 
   return (
     <div className="about-page">
@@ -99,17 +101,10 @@ export default function About() {
             <div className="about-story__text">
               <span className="about-label">Our Beginning</span>
               <h2>Where Strength Met Vision</h2>
-              <p>
-                {getContent("story1") || "Neurafit Nutrition was born from a passion for fitness and performance, combining business insight, fitness passion, and execution strength."}
-              </p>
-              <p>
-                {getContent("story2") || "Three co-founders united by a singular vision: to create premium supplements that empower athletes and fitness enthusiasts to achieve their peak performance."}
-              </p>
-              <p>
-                {getContent("story3") || "From strategy and innovation to seamless operations and powerful brand presence, together we're building more than a supplement brand—we're building a movement."}
-              </p>
+              <p>{getContent("story1") || "Neurafit Nutrition was born from a passion for fitness and performance, combining business insight, fitness passion, and execution strength."}</p>
+              <p>{getContent("story2") || "Three co-founders united by a singular vision: to create premium supplements that empower athletes and fitness enthusiasts to achieve their peak performance."}</p>
+              <p>{getContent("story3") || "From strategy and innovation to seamless operations and powerful brand presence, together we're building more than a supplement brand—we're building a movement."}</p>
             </div>
-
             <div className="about-story__card">
               <div className="about-story__icon">🌾</div>
               <h3>Darbhanga, Bihar</h3>
@@ -123,7 +118,7 @@ export default function About() {
         </div>
       </div>
 
-      {/* 3️⃣ TEAM - ✅ NOW DYNAMIC WITH 3 MEMBERS */}
+      {/* 3️⃣ TEAM */}
       <div className="about-outer about-outer--cream">
         <div className="about-section">
           <div className="about-section__head">
@@ -131,81 +126,59 @@ export default function About() {
             <p>The visionaries behind Neurafit Nutrition who combine business insight, fitness passion, and execution strength.</p>
           </div>
           <div className="about-team-grid">
-
-            {/* ✅ IMPROVED: Dynamic team member rendering */}
             {loading ? (
               <p>Loading team members...</p>
-            ) : (
-              teamData && teamData.length > 0 ? (
-                teamData.map((member) => (
-                  <div className="about-member" key={member.id}>
-                    <div className="about-member__avatar-wrap">
-                      <img
-                        src={
-                          member.image?.startsWith('http')
-                            ? member.image
-                            : `http://localhost:5000/uploads/${member.image}`
-                        }
-                        alt={member.name}
-                        className="about-member__photo"
-                        onError={(e) => {
-                          e.target.src = "https://via.placeholder.com/200?text=" + member.name;
-                        }}
-                      />
-                    </div>
-
-                    <div className="about-member__info">
-                      <h3>{member.name}</h3>
-                      <span className="about-member__role">{member.role}</span>
-                      <p>{member.bio}</p>
-                    </div>
+            ) : teamData.length > 0 ? (
+              teamData.map((member) => (
+                <div className="about-member" key={member.id}>
+                  <div className="about-member__avatar-wrap">
+                    <img
+                      src={getImageUrl(member.image)}
+                      alt={member.name}
+                      className="about-member__photo"
+                      onError={(e) => { e.target.src = getAvatarFallback(member.name); }}
+                    />
                   </div>
-                ))
-              ) : (
-                <p>No team members found</p>
-              )
+                  <div className="about-member__info">
+                    <h3>{member.name}</h3>
+                    <span className="about-member__role">{member.role}</span>
+                    <p>{member.bio}</p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p>No team members found</p>
             )}
-
           </div>
         </div>
       </div>
 
-      {/* 4️⃣ FOUNDER QUOTE - ✅ DYNAMIC FROM FIRST TEAM MEMBER */}
-      {teamData && teamData.length > 0 && teamData[0] && (
+      {/* 4️⃣ FOUNDER QUOTE */}
+      {teamData.length > 0 && (
         <div className="about-outer">
           <div className="about-section">
             <div className="about-founder">
               <div className="about-founder__left">
                 <div className="about-founder__avatar-wrap">
                   <img
-                    src={
-                      teamData[0]?.image?.startsWith('http')
-                        ? teamData[0].image
-                        : `http://localhost:5000/uploads/${teamData[0]?.image}`
-                    }
-                    alt={teamData[0]?.name}
+                    src={getImageUrl(teamData[0].image)}
+                    alt={teamData[0].name}
                     className="about-founder__photo"
-                    onError={(e) => {
-                      e.target.src = "https://via.placeholder.com/200?text=" + teamData[0]?.name;
-                    }}
+                    onError={(e) => { e.target.src = getAvatarFallback(teamData[0].name); }}
                   />
                 </div>
                 <div>
-                  <strong>{teamData[0]?.name}</strong>
-                  <span>{teamData[0]?.role}</span>
+                  <strong>{teamData[0].name}</strong>
+                  <span>{teamData[0].role}</span>
                 </div>
               </div>
               <div className="about-founder__right">
                 <span className="about-label">Our Founder</span>
-                <h2>
-                  {teamData[0]?.founderTitle || `${teamData[0]?.name} - Founder & Vision Lead of Neurafit Nutrition`}
-                </h2>
-                <p>
-                  {teamData[0]?.founderDesc || `${teamData[0]?.name} is the visionary founder of Neurafit Nutrition, passionate about creating premium supplements that truly deliver results.`}
-                </p>
+                <h2>{teamData[0].founderTitle || `${teamData[0].name} - Founder & Vision Lead of Neurafit Nutrition`}</h2>
+                <p>{teamData[0].founderDesc || `${teamData[0].name} is the visionary founder of Neurafit Nutrition, passionate about creating premium supplements that truly deliver results.`}</p>
                 <blockquote className="about-blockquote">
-                  "{teamData[0]?.founderQuote || 'Neurafit Nutrition is about building a community of champions who refuse to settle.'}"
-                  <cite>— {teamData[0]?.name}, {teamData[0]?.role}</cite>
+                  "{teamData[0].founderQuote || "Neurafit Nutrition is about building a community of champions who refuse to settle."}"
+                  <cite>— {teamData[0].name}, {teamData[0].role}</cite>
                 </blockquote>
               </div>
             </div>
@@ -238,15 +211,9 @@ export default function About() {
             <div className="about-quality__left">
               <span className="about-label">Our Promise</span>
               <h2>Our Quality Commitment</h2>
-              <p>
-                We use only premium-grade ingredients and advanced formulations to deliver supplements that ensure purity, safety, and maximum performance results.
-              </p>
-              <p>
-                Every product is designed to enhance energy, strength, and endurance, helping you push beyond limits and achieve your fitness goals.
-              </p>
-              <p>
-                We believe in complete honesty about our ingredients, formulations, and nutritional values, so you can fuel your body with full confidence.
-              </p>
+              <p>We use only premium-grade ingredients and advanced formulations to deliver supplements that ensure purity, safety, and maximum performance results.</p>
+              <p>Every product is designed to enhance energy, strength, and endurance, helping you push beyond limits and achieve your fitness goals.</p>
+              <p>We believe in complete honesty about our ingredients, formulations, and nutritional values, so you can fuel your body with full confidence.</p>
               <Link to="/" className="about-btn about-btn--dark">Explore Our Products</Link>
             </div>
             <div className="about-quality__badges">
@@ -282,7 +249,7 @@ export default function About() {
         </div>
       </div>
 
-      {/* 8️⃣ SHOP - ✅ FIXED: Correct brand name */}
+      {/* 8️⃣ SHOP */}
       <div className="about-outer">
         <div className="about-section">
           <div className="about-section__head">
@@ -290,7 +257,6 @@ export default function About() {
             <p>Our premium supplements are available on your favorite online marketplaces.</p>
           </div>
           <div className="about-platforms">
-
             <div className="about-platform-card">
               <div className="about-platform-card__logo about-platform-card__logo--flipkart">F</div>
               <h3>Flipkart</h3>
@@ -299,7 +265,6 @@ export default function About() {
                 Shop on Flipkart
               </a>
             </div>
-
             <div className="about-platform-card">
               <div className="about-platform-card__logo about-platform-card__logo--amazon">a</div>
               <h3>Amazon</h3>
@@ -308,17 +273,14 @@ export default function About() {
                 Shop on Amazon
               </a>
             </div>
-
           </div>
         </div>
       </div>
 
-      {/* 9️⃣ CTA - ✅ FIXED: Correct brand name */}
+      {/* 9️⃣ CTA */}
       <div className="about-cta">
         <h2>Experience Neurafit Nutrition</h2>
-        <p>
-          Ready to elevate your performance? Explore our premium supplements and discover the perfect fuel to boost your strength, energy, and endurance.
-        </p>
+        <p>Ready to elevate your performance? Explore our premium supplements and discover the perfect fuel to boost your strength, energy, and endurance.</p>
         <div className="about-cta__btns">
           <Link to="/" className="about-btn about-btn--white">Shop Now</Link>
           <Link to="/sales" className="about-btn about-btn--outline-white">Contact Us</Link>
