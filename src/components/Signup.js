@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-const API = process.env.REACT_APP_BASE_URL;
+// ✅ FIX 2: Fallback add kiya
+const API = process.env.REACT_APP_BASE_URL || "http://localhost:5000";
 
 export default function Signup() {
   const [form, setForm] = useState({
@@ -22,7 +23,6 @@ export default function Signup() {
   const handleSignup = async () => {
     setError("");
 
-    // ── Validation ──
     if (!form.firstName || !form.email || !form.password) {
       setError("First name, email aur password required hain");
       return;
@@ -39,15 +39,16 @@ export default function Signup() {
     try {
       setLoading(true);
 
-      const res = await fetch(`${API}/auth/signup`, {
+      // ✅ FIX 1: /api prefix add kiya
+      const res = await fetch(`${API}/api/auth/signup`, {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name:     `${form.firstName} ${form.lastName}`.trim(),
-          email:    form.email,
+          name    : `${form.firstName} ${form.lastName}`.trim(),
+          email   : form.email,
           password: form.password,
-          phone:    form.phone,
-          address:  `${form.address}, ${form.city}, ${form.district}, ${form.state} - ${form.pincode}`.trim(),
+          phone   : form.phone,
+          address : `${form.address}, ${form.city}, ${form.district}, ${form.state} - ${form.pincode}`.trim(),
         }),
       });
 
@@ -58,15 +59,14 @@ export default function Signup() {
         return;
       }
 
-      // ✅ Token save karo aur login kar do
-      localStorage.setItem("token",    data.token);
-      localStorage.setItem("userName", data.name);
-      localStorage.setItem("userId",   data._id);
+      // ✅ FIX 3: Login.js se consistent — "user" key use karo
+      localStorage.setItem("user",  JSON.stringify(data));
+      localStorage.setItem("token", data.token);
 
+      // ✅ FIX 4: reload hata diya — navigate kaafi hai
       navigate("/");
-      window.location.reload();
 
-    } catch (err) {
+    } catch {
       setError("Server se connect nahi ho pa raha. Backend check karo.");
     } finally {
       setLoading(false);
@@ -137,7 +137,7 @@ export default function Signup() {
           padding: 10px 14px; border-radius: 7px; margin-bottom: 16px;
         }
         .signup-btn {
-          width: 100%;  margin: 10px auto;   
+          width: 100%;
           background: linear-gradient(135deg, #2e875d, #00cc6a);
           color: #0a0a09; font-weight: 800; font-size: 14px;
           letter-spacing: 2px; text-transform: uppercase;
@@ -171,23 +171,24 @@ export default function Signup() {
           <div className="signup-grid">
             <div>
               <label className="signup-label">First Name *</label>
+              {/* ✅ FIX 5: value prop add kiya — controlled inputs */}
               <input className="signup-input" name="firstName"
-                placeholder="Prem" onChange={handleChange} />
+                placeholder="Prem" value={form.firstName} onChange={handleChange} />
             </div>
             <div>
               <label className="signup-label">Last Name</label>
               <input className="signup-input" name="lastName"
-                placeholder="Sharma" onChange={handleChange} />
+                placeholder="Sharma" value={form.lastName} onChange={handleChange} />
             </div>
             <div>
               <label className="signup-label">Email *</label>
               <input className="signup-input" name="email" type="email"
-                placeholder="prem@email.com" onChange={handleChange} />
+                placeholder="prem@email.com" value={form.email} onChange={handleChange} />
             </div>
             <div>
               <label className="signup-label">Phone</label>
               <input className="signup-input" name="phone" type="tel"
-                placeholder="+91 " onChange={handleChange} />
+                placeholder="9876543210" maxLength={10} value={form.phone} onChange={handleChange} />
             </div>
           </div>
 
@@ -197,27 +198,29 @@ export default function Signup() {
             <div className="signup-full">
               <label className="signup-label">Complete Address</label>
               <textarea className="signup-textarea" name="address"
-                placeholder="House No, Street, Area..." onChange={handleChange} />
+                placeholder="House No, Street, Area..."
+                value={form.address} onChange={handleChange} />
             </div>
             <div>
               <label className="signup-label">PIN Code</label>
               <input className="signup-input" name="pincode"
-                placeholder="846005" onChange={handleChange} />
+                placeholder="846005" maxLength={6}
+                value={form.pincode} onChange={handleChange} />
             </div>
             <div>
               <label className="signup-label">City</label>
               <input className="signup-input" name="city"
-                placeholder="Darbhanga" onChange={handleChange} />
+                placeholder="Darbhanga" value={form.city} onChange={handleChange} />
             </div>
             <div>
               <label className="signup-label">District</label>
               <input className="signup-input" name="district"
-                placeholder="Darbhanga" onChange={handleChange} />
+                placeholder="Darbhanga" value={form.district} onChange={handleChange} />
             </div>
             <div>
               <label className="signup-label">State</label>
               <input className="signup-input" name="state"
-                placeholder="Bihar" onChange={handleChange} />
+                placeholder="Bihar" value={form.state} onChange={handleChange} />
             </div>
           </div>
 
@@ -227,23 +230,25 @@ export default function Signup() {
             <div>
               <label className="signup-label">Password *</label>
               <input className="signup-input" name="password" type="password"
-                placeholder="Min 6 characters" onChange={handleChange} />
+                placeholder="Min 6 characters"
+                value={form.password} onChange={handleChange} />
             </div>
             <div>
               <label className="signup-label">Confirm Password *</label>
               <input className="signup-input" name="confirmPassword" type="password"
-                placeholder="Re-enter password" onChange={handleChange} />
+                placeholder="Re-enter password"
+                value={form.confirmPassword} onChange={handleChange} />
             </div>
           </div>
 
           {error && <div className="signup-err">❌ {error}</div>}
 
           <button className="signup-btn" onClick={handleSignup} disabled={loading}>
-            {loading ? "Creating Account..." : "Create Account "}
+            {loading ? "Creating Account..." : "Create Account"}
           </button>
 
           <div className="signup-switch">
-            Already have an account? <Link to="/login">Log in </Link>
+            Already have an account? <Link to="/login">Log in</Link>
           </div>
         </div>
       </div>
