@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "./AuthContext";
 import { Link } from "react-router-dom";
 import AdminUsers from "./AdminUsers";
-import logo from "../../assets/logo.png";
+import logo from "../../assets/logo-nav.png";
 const API = process.env.REACT_APP_BASE_URL;
 
 const DUMMY_CONTENT = {
