@@ -18,7 +18,11 @@ export default function ProductCard({ product }) {
   return (
     <div className="card">
       <img
-        src={images[index]}
+        src={
+  images[index]?.startsWith("http")
+    ? images[index]
+    : `${process.env.REACT_APP_BASE_URL}${images[index]}`
+}
         alt={product.name}
         className="product-img"
       />
