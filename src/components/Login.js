@@ -1,68 +1,61 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-const API = process.env.REACT_APP_BASE_URL;
+// ✅ FIX 2: Fallback add kiya
+const API = process.env.REACT_APP_BASE_URL || "http://localhost:5000";
 
 export default function Login() {
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-
-    
-  });
-
-  const [error, setError] = useState("");
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [error, setError]     = useState("");
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-if (userInfo?.token) {
-  navigate("/profile");
-}
-}, [navigate]);
+    const token = localStorage.getItem("token");
+    if (token) navigate("/profile");
+  }, [navigate]);
+
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleLogin = async () => {
-  setError("");
+    setError("");
 
-  if (!form.email || !form.password) {
-    setError("Email aur password required hai");
-    return;
-  }
-
-  try {
-    setLoading(true);
-
-   const res = await fetch(`${API}/users/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(form),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      setError(data.message || "Login failed");
+    if (!form.email || !form.password) {
+      setError("Email aur password required hai");
       return;
     }
 
-    // ✅ Save user data
-  localStorage.setItem("userInfo", JSON.stringify(data));
-  localStorage.setItem("token", data.token);   // 🔥 YE LINE ADD KARO
-    // 🔥 FINAL FIX
-    navigate("/profile");
+    try {
+      setLoading(true);
 
-  } catch (err) {
-    setError("Server se connect nahi ho pa raha");
-  } finally {
-    setLoading(false);
-  }
-};
+      // ✅ FIX 1: /api prefix add kiya
+      const res  = await fetch(`${API}/api/auth/login`, {
+        method  : "POST",
+        headers : { "Content-Type": "application/json" },
+        body    : JSON.stringify(form),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.message || "Login failed");
+        return;
+      }
+
+      // ✅ FIX 3: "user" key use karo — Checkout.js se match karta hai
+      localStorage.setItem("user",  JSON.stringify(data));
+      localStorage.setItem("token", data.token);
+
+      navigate("/profile");
+
+    } catch {
+      setError("Server se connect nahi ho pa raha");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -106,44 +99,44 @@ if (userInfo?.token) {
 
         .login-label {
           font-size: 11px;
-          color: rgba(10, 110, 64, 0.6);
+          color: rgba(100, 220, 150, 0.7);
           margin-bottom: 6px;
           display: block;
           text-transform: uppercase;
         }
 
         .login-input {
-          width: 94%;
+          width: 100%;
           padding: 12px;
           margin-bottom: 15px;
           background: rgba(255,255,255,0.05);
           border: 1px solid rgba(0,255,136,0.2);
           border-radius: 8px;
           color: white;
+          box-sizing: border-box;
         }
 
         .login-input:focus {
           outline: none;
-          border-color: #056e3d;
-          
-        
+          border-color: #00cc6a;
         }
 
         .login-btn {
-    
-          width: 99%;
+          width: 100%;
           padding: 14px;
           background: linear-gradient(135deg, #277752, #00cc6a);
           border: none;
           border-radius: 8px;
           font-weight: bold;
           cursor: pointer;
-          margin: 1%;
-          
+          color: #fff;
+          font-size: 14px;
+          letter-spacing: 0.04em;
         }
 
         .login-btn:disabled {
           opacity: 0.6;
+          cursor: not-allowed;
         }
 
         .login-error {
@@ -155,13 +148,19 @@ if (userInfo?.token) {
         .login-footer {
           text-align: center;
           font-size: 13px;
+          color: rgba(255,255,255,0.4);
           margin-top: 15px;
         }
 
+        /* ✅ FIX 4: Link visible color */
         .login-footer a {
-          color: #094328;
+          color: #00cc6a;
           font-weight: bold;
           text-decoration: none;
+        }
+
+        .login-footer a:hover {
+          text-decoration: underline;
         }
       `}</style>
 
@@ -177,6 +176,7 @@ if (userInfo?.token) {
             type="email"
             name="email"
             placeholder="Enter email"
+            value={form.email}
             onChange={handleChange}
           />
 
@@ -186,17 +186,18 @@ if (userInfo?.token) {
             type="password"
             name="password"
             placeholder="Enter password"
+            value={form.password}
             onChange={handleChange}
           />
 
           {error && <div className="login-error">❌ {error}</div>}
 
           <button className="login-btn" onClick={handleLogin} disabled={loading}>
-            {loading ? "Logging in..." : "Log in "}
+            {loading ? "Logging in..." : "Log in"}
           </button>
 
           <div className="login-footer">
-            Don't have an account? <Link to="/signup">Sign up </Link>
+            Don't have an account? <Link to="/signup">Sign up</Link>
           </div>
 
         </div>
