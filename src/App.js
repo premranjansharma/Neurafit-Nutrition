@@ -245,7 +245,7 @@ useEffect(() => {
 const [products, setProducts] = useState([]);
 
 useEffect(() => {
-  fetch(`${process.env.REACT_APP_BASE_URL}/products`)
+  fetch(`${process.env.REACT_APP_BASE_URL}/api/products`)
     .then(res => res.json())
     .then(data => {
       const BASE = process.env.REACT_APP_BASE_URL;
