@@ -59,11 +59,11 @@ if (!Array.isArray(products)) return <div style={{textAlign:"center",padding:"80
                 <div className="products-card__img-wrap">
                   {product.images?.[0] ? (
                     <img
-                      src={
+               src={
               product.images?.[0]
-              ? `http://localhost:5000${product.images[0]}`
+              ? `${process.env.REACT_APP_BASE_URL}${product.images[0]}`
               : "/placeholder.png"
-                 }
+                      }
                       alt={product.name}
                       className="products-card__img"
                     />
