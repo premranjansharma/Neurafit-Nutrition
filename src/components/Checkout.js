@@ -1,5 +1,9 @@
 import React, { useContext, useState } from "react";
 import { CartContext } from "../context/CartContext";
+import { useNavigate } from "react-router-dom";
+
+// ✅ FIX 1: API_BASE — sab jagah consistent
+const API_BASE = process.env.REACT_APP_BASE_URL || "http://localhost:5000";
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@300;400;500;600&display=swap');
@@ -339,8 +343,15 @@ const loadRazorpayScript = () =>
     document.body.appendChild(script);
   });
 
+// ✅ Helper: token header
+const authHeader = () => {
+  const token = localStorage.getItem("token");
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
 export default function Checkout() {
   const { cart, clearCart } = useContext(CartContext);
+  const navigate = useNavigate(); // ✅ FIX 3
 
   const [paymentMethod, setPaymentMethod] = useState("COD");
   const [loading, setLoading]             = useState(false);
@@ -425,19 +436,34 @@ export default function Checkout() {
     };
   };
 
+  // ✅ FIX 4: Phone validation helper
+  const validateForm = () => {
+    if (!form.name.trim())    { alert("Name required");           return false; }
+    if (!form.phone.trim())   { alert("Phone number required");   return false; }
+    if (!/^[6-9]\d{9}$/.test(form.phone.replace(/\s+/g, ""))) {
+      alert("Valid 10-digit Indian mobile number enter karo");   return false;
+    }
+    if (!form.pincode.trim()) { alert("Pincode required");        return false; }
+    if (!form.address.trim()) { alert("Address required");        return false; }
+    return true;
+  };
+
   // ── COD ──
   const handleCOD = async () => {
     setLoading(true);
     try {
-      const res  = await fetch("http://localhost:5000/api/orders", {
+      const res  = await fetch(`${API_BASE}/api/orders`, { // ✅ FIX 1
         method  : "POST",
-        headers : { "Content-Type": "application/json" },
+        headers : {
+          "Content-Type": "application/json",
+          ...authHeader(), // ✅ FIX 2: auth token
+        },
         body    : JSON.stringify({ ...getOrderData(), paymentMethod: "COD", status: "pending" }),
       });
       const data = await res.json();
       if (!res.ok) { alert(data.message || "Order failed"); return; }
-      alert("✅ Order placed successfully!");
       clearCart();
+      navigate("/order-success"); // ✅ FIX 3: navigate after order
     } catch (err) {
       console.error(err);
       alert("Server error");
@@ -446,7 +472,7 @@ export default function Checkout() {
     }
   };
 
-  // ── Razorpay ──  ← SIRF YAHI BADLA HAI
+  // ── Razorpay ──
   const handleRazorpay = async () => {
     setLoading(true);
     const loaded = await loadRazorpayScript();
@@ -454,14 +480,11 @@ export default function Checkout() {
 
     try {
       // STEP 1 — Order create
-    const createRes = await fetch("http://localhost:5000/api/payment/razorpay/create", {
-  method  : "POST",
-  headers : {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${localStorage.getItem("token")}`
-  },
-  body    : JSON.stringify({ amount: total, currency: "INR" }),
-});
+      const createRes = await fetch(`${API_BASE}/api/payment/razorpay/create`, { // ✅ FIX 1
+        method  : "POST",
+        headers : { "Content-Type": "application/json", ...authHeader() },
+        body    : JSON.stringify({ amount: total, currency: "INR" }),
+      });
 
       if (!createRes.ok) {
         const e = await createRes.json();
@@ -472,7 +495,7 @@ export default function Checkout() {
 
       // STEP 2 — Razorpay popup
       const opts = {
-        key         : keyId,          // backend se aata hai automatically
+        key         : keyId,
         amount      : amountPaise,
         currency,
         name        : "Neurafit Nutrition",
@@ -482,12 +505,9 @@ export default function Checkout() {
         handler: async (response) => {
           try {
             // STEP 3 — Verify
-            const verRes  = await fetch("http://localhost:5000/api/payment/razorpay/verify", {
+            const verRes  = await fetch(`${API_BASE}/api/payment/razorpay/verify`, { // ✅ FIX 1
               method  : "POST",
-             headers : {
-                  "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("token")}`
-                        },
+              headers : { "Content-Type": "application/json", ...authHeader() },
               body    : JSON.stringify({
                 paymentDbId,
                 razorpayOrderId  : response.razorpay_order_id,
@@ -499,25 +519,22 @@ export default function Checkout() {
             if (!verData.success) { alert(verData.message || "Verify fail."); setLoading(false); return; }
 
             // STEP 4 — Save order
-            const ordRes  = await fetch("http://localhost:5000/api/orders", {
-  method  : "POST",
-  headers : {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${localStorage.getItem("token")}`
-  },
-  body    : JSON.stringify({
-    ...getOrderData(),
-    paymentMethod     : "Razorpay",
-    status            : "paid",
-    paymentId         : paymentDbId,
-    razorpayPaymentId : response.razorpay_payment_id,
-  }),
-});
+            const ordRes  = await fetch(`${API_BASE}/api/orders`, { // ✅ FIX 1
+              method  : "POST",
+              headers : { "Content-Type": "application/json", ...authHeader() },
+              body    : JSON.stringify({
+                ...getOrderData(),
+                paymentMethod     : "Razorpay",
+                status            : "paid",
+                paymentId         : paymentDbId,
+                razorpayPaymentId : response.razorpay_payment_id,
+              }),
+            });
             const ordData = await ordRes.json();
             if (!ordRes.ok) { alert(ordData.message || "Order save nahi hua."); setLoading(false); return; }
 
-            alert("✅ Payment successful! Order place ho gaya.");
             clearCart();
+            navigate("/order-success"); // ✅ FIX 3
           } catch { alert("Order save error. Support se contact karo."); }
           finally  { setLoading(false); }
         },
@@ -536,8 +553,8 @@ export default function Checkout() {
   };
 
   const handlePayment = () => {
-    if (cart.length === 0)                                            { alert("Cart empty!");                     return; }
-    if (!form.name || !form.phone || !form.pincode || !form.address)  { alert("Please fill all required fields"); return; }
+    if (cart.length === 0)  { alert("Cart empty!"); return; }
+    if (!validateForm())     return; // ✅ FIX 4: proper validation
     paymentMethod === "COD" ? handleCOD() : handleRazorpay();
   };
 
@@ -609,7 +626,7 @@ export default function Checkout() {
               </div>
               <div className="form-grp">
                 <label className="form-label">Phone *</label>
-                <input className="form-input" type="tel" placeholder="+91 XXXXX XXXXX" value={form.phone} onChange={set("phone")} />
+                <input className="form-input" type="tel" placeholder="9876543210" maxLength={10} value={form.phone} onChange={set("phone")} />
               </div>
             </div>
 
