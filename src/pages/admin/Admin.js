@@ -165,10 +165,10 @@ export default function Admin({ setProducts: setParentProducts, offers, setOffer
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
   fetch(`${API}/api/orders`, {
-    headers: {
-      Authorization: `Bearer ${userInfo?.token}`, // 👈 MOST IMPORTANT
-    },
-  })
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
+})
     .then(res => res.json())
     .then(data => {
       const list = Array.isArray(data) ? data : data.orders || [];
