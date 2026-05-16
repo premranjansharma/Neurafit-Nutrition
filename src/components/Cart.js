@@ -4,7 +4,9 @@ import { useNavigate } from "react-router-dom";
 
 const FREE_DELIVERY_AT = 600;
 const DELIVERY_FEE     = 35;
-const API_BASE         = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+// ✅ FIX 1: Consistent env var — About.js se match karta hai
+const API_BASE = process.env.REACT_APP_BASE_URL || "http://localhost:5000";
 
 const fmt = (n) =>
   "₹" + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -101,7 +103,7 @@ const styles = `
   .coupon-applied-tag { font-size:10.5px; font-weight:600; color:var(--green); letter-spacing:0.04em; text-transform:uppercase; }
   .coupon-fetch-error { font-size:12px; color:var(--red); text-align:center; padding:12px; }
 
-  .coupon-box { background:var(--warm-white); border:1.5px dashed var(--border); border-radius:12px; padding:14px 16px; margin-bottom:14px; }
+  .coupon-box { background:var(--warm-white); border:1.5px dashed var(--border); border-radius:12px; padding:14px 16px; margin-bottom:14px; position:relative; }
   .coupon-label { font-size:0.72rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); margin-bottom:10px; display:flex; align-items:center; gap:6px; }
   .coupon-row { display:flex; gap:8px; }
   .coupon-input { flex:1; background:white; border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:10px 13px; font-family:var(--ff-body); font-size:13px; color:var(--charcoal); letter-spacing:0.07em; text-transform:uppercase; outline:none; transition:border-color var(--tr); }
@@ -157,6 +159,7 @@ export default function Cart() {
   const { cart, removeFromCart, increaseQty, decreaseQty } = useContext(CartContext);
   const navigate = useNavigate();
 
+  // ✅ FIX 2: couponRef sirf coupon section pe — poore component pe nahi
   const couponRef = useRef();
 
   const [couponInput, setCouponInput]       = useState("");
@@ -164,13 +167,12 @@ export default function Cart() {
   const [couponMsg, setCouponMsg]           = useState({ text: "", type: "" });
   const [showCouponList, setShowCouponList] = useState(false);
 
-  // ── Backend states ──
   const [couponList, setCouponList]   = useState([]);
   const [listLoading, setListLoading] = useState(false);
   const [listError, setListError]     = useState("");
   const [validating, setValidating]   = useState(false);
 
-  // Outside click — dropdown band karo
+  // ✅ FIX 2: Sirf coupon box ke bahar click pe band hoga
   useEffect(() => {
     const handle = (e) => {
       if (couponRef.current && !couponRef.current.contains(e.target)) {
@@ -181,14 +183,17 @@ export default function Cart() {
     return () => document.removeEventListener("mousedown", handle);
   }, []);
 
-  // ── GET /api/coupons — input focus par ek baar fetch ──
   const fetchCouponList = useCallback(async () => {
-    if (couponList.length > 0) return;       // already loaded, dobara mat fetch karo
+    if (couponList.length > 0) return;
     setListLoading(true);
     setListError("");
     try {
-      const res  = await fetch(`${API_BASE}/api/coupons`);
-      const data = await res.json();
+      // ✅ FIX 3: Auth token add kiya — agar route protected hai
+      const token = localStorage.getItem("token");
+      const res   = await fetch(`${API_BASE}/api/coupons`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      const data  = await res.json();
       if (data.success) {
         setCouponList(data.coupons);
       } else {
@@ -201,11 +206,10 @@ export default function Cart() {
     }
   }, [couponList.length]);
 
-  // ── Totals ──
   const { subtotal, discountAmt, deliveryFee, total, progressPct, needed } = useMemo(() => {
     const sub = cart.reduce((s, item) => s + item.price * (item.qty ?? item.quantity ?? 1), 0);
 
-    let disc = 0;
+    let disc     = 0;
     let freeShip = false;
     if (appliedCoupon) {
       if (appliedCoupon.type === "free")   { freeShip = true; }
@@ -228,15 +232,19 @@ export default function Cart() {
     setTimeout(() => setCouponMsg({ text: "", type: "" }), 3500);
   };
 
-  // ── POST /api/coupons/validate ──
   const validateAndApply = async (code) => {
     setValidating(true);
     setShowCouponList(false);
     try {
-      const res  = await fetch(`${API_BASE}/api/coupons/validate`, {
+      // ✅ FIX 3: Auth token validate mein bhi
+      const token = localStorage.getItem("token");
+      const res   = await fetch(`${API_BASE}/api/coupons/validate`, {
         method : "POST",
-        headers: { "Content-Type": "application/json" },
-        body   : JSON.stringify({
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
           code     : code.trim().toUpperCase(),
           cartTotal: subtotal,
         }),
@@ -244,7 +252,7 @@ export default function Cart() {
       const data = await res.json();
 
       if (data.success) {
-        setAppliedCoupon(data.coupon);     // { code, discount, type, isPercent, discountAmt }
+        setAppliedCoupon(data.coupon);
         setCouponInput(data.coupon.code);
         showMsg(data.message, "ok");
       } else {
@@ -278,7 +286,8 @@ export default function Cart() {
   const getId  = (item) => item._id || item.id;
 
   return (
-    <div ref={couponRef}>
+    // ✅ FIX 2: ref yahan se hata diya
+    <div>
       <style>{styles}</style>
 
       <div className="cart-page">
@@ -336,114 +345,110 @@ export default function Cart() {
               ))}
             </div>
 
-            {/* ── Coupon Dropdown (backend data) ── */}
-            {showCouponList && (
-              <div className="coupon-list-section">
-                <p className="coupon-section-label">
+            {/* ✅ FIX 2: ref sirf coupon section pe */}
+            <div ref={couponRef}>
+
+              {/* ── Coupon Dropdown ── */}
+              {showCouponList && (
+                <div className="coupon-list-section">
+                  <p className="coupon-section-label">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                      <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                      <line x1="7" y1="7" x2="7.01" y2="7"/>
+                    </svg>
+                    Available Coupons
+                  </p>
+                  <div className="coupon-cards">
+                    {listLoading && (
+                      <>
+                        <div className="coupon-skeleton" />
+                        <div className="coupon-skeleton" />
+                        <div className="coupon-skeleton" />
+                      </>
+                    )}
+                    {listError && <p className="coupon-fetch-error">⚠️ {listError}</p>}
+                    {!listLoading && !listError && couponList.map((c) => {
+                      const isApplied = appliedCoupon?.code === c.code;
+                      return (
+                        <div
+                          key={c.code}
+                          className={`coupon-card ${isApplied ? "applied" : ""}`}
+                          onClick={() => handleApplyCoupon(c.code)}
+                        >
+                          <div className="coupon-card-icon">{c.icon}</div>
+                          <div className="coupon-card-body">
+                            <div className="coupon-card-code">{c.code}</div>
+                            <div className="coupon-card-desc">{c.label}</div>
+                            <div className="coupon-card-expiry">{c.expiry}</div>
+                          </div>
+                          <div className="coupon-card-right">
+                            <span className={`coupon-badge ${c.type}`}>{c.badge}</span>
+                            <span className={isApplied ? "coupon-applied-tag" : "coupon-apply-tag"}>
+                              {isApplied ? "✓ Applied" : "Apply"}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* ── Coupon Input Box ── */}
+              <div className="coupon-box">
+                <p className="coupon-label">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                    stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                     <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
                     <line x1="7" y1="7" x2="7.01" y2="7"/>
                   </svg>
-                  Available Coupons
+                  Apply Coupon
                 </p>
-
-                <div className="coupon-cards">
-                  {/* Loading skeletons */}
-                  {listLoading && (
-                    <>
-                      <div className="coupon-skeleton" />
-                      <div className="coupon-skeleton" />
-                      <div className="coupon-skeleton" />
-                    </>
-                  )}
-
-                  {/* Fetch error */}
-                  {listError && (
-                    <p className="coupon-fetch-error">⚠️ {listError}</p>
-                  )}
-
-                  {/* Coupon cards */}
-                  {!listLoading && !listError && couponList.map((c) => {
-                    const isApplied = appliedCoupon?.code === c.code;
-                    return (
-                      <div
-                        key={c.code}
-                        className={`coupon-card ${isApplied ? "applied" : ""}`}
-                        onClick={() => handleApplyCoupon(c.code)}
-                      >
-                        <div className="coupon-card-icon">{c.icon}</div>
-                        <div className="coupon-card-body">
-                          <div className="coupon-card-code">{c.code}</div>
-                          <div className="coupon-card-desc">{c.label}</div>
-                          <div className="coupon-card-expiry">{c.expiry}</div>
-                        </div>
-                        <div className="coupon-card-right">
-                          <span className={`coupon-badge ${c.type}`}>{c.badge}</span>
-                          <span className={isApplied ? "coupon-applied-tag" : "coupon-apply-tag"}>
-                            {isApplied ? "✓ Applied" : "Apply"}
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* ── Coupon Input Box ── */}
-            <div className="coupon-box">
-              <p className="coupon-label">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
-                  <line x1="7" y1="7" x2="7.01" y2="7"/>
-                </svg>
-                Apply Coupon
-              </p>
-
-              {appliedCoupon ? (
-                <div className="coupon-applied">
-                  <span>
-                    ✓ {appliedCoupon.code} —{" "}
-                    {appliedCoupon.type === "free"
-                      ? "Free delivery"
-                      : appliedCoupon.isPercent
-                        ? `${appliedCoupon.discount}% off`
-                        : `₹${appliedCoupon.discount} off`}{" "}
-                    applied!
-                  </span>
-                  <button className="coupon-remove-btn" onClick={handleRemoveCoupon}>
-                    ✕ Remove
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <div className="coupon-row">
-                    <input
-                      className="coupon-input"
-                      placeholder="Enter coupon code"
-                      value={couponInput}
-                      onChange={(e) => setCouponInput(e.target.value)}
-                      onFocus={() => {
-                        setShowCouponList(true);
-                        fetchCouponList();           // 👈 pehli baar focus par fetch
-                      }}
-                    />
-                    <button
-                      className="coupon-apply-btn"
-                      onClick={handleApplyCouponFromInput}
-                      disabled={validating}
-                    >
-                      {validating ? "Checking…" : "Apply"}
+                {appliedCoupon ? (
+                  <div className="coupon-applied">
+                    <span>
+                      ✓ {appliedCoupon.code} —{" "}
+                      {appliedCoupon.type === "free"
+                        ? "Free delivery"
+                        : appliedCoupon.isPercent
+                          ? `${appliedCoupon.discount}% off`
+                          : `₹${appliedCoupon.discount} off`}{" "}
+                      applied!
+                    </span>
+                    <button className="coupon-remove-btn" onClick={handleRemoveCoupon}>
+                      ✕ Remove
                     </button>
                   </div>
-                  {couponMsg.text && (
-                    <p className={`coupon-msg ${couponMsg.type}`}>{couponMsg.text}</p>
-                  )}
-                </>
-              )}
-            </div>
+                ) : (
+                  <>
+                    <div className="coupon-row">
+                      <input
+                        className="coupon-input"
+                        placeholder="Enter coupon code"
+                        value={couponInput}
+                        onChange={(e) => setCouponInput(e.target.value)}
+                        onFocus={() => {
+                          setShowCouponList(true);
+                          fetchCouponList();
+                        }}
+                      />
+                      <button
+                        className="coupon-apply-btn"
+                        onClick={handleApplyCouponFromInput}
+                        disabled={validating}
+                      >
+                        {validating ? "Checking…" : "Apply"}
+                      </button>
+                    </div>
+                    {couponMsg.text && (
+                      <p className={`coupon-msg ${couponMsg.type}`}>{couponMsg.text}</p>
+                    )}
+                  </>
+                )}
+              </div>
+
+            </div>{/* end couponRef */}
 
             {/* ── Free Delivery Progress ── */}
             <div className="delivery-progress">
@@ -468,12 +473,10 @@ export default function Cart() {
             {/* ── Price Summary ── */}
             <div className="price-box">
               <p className="price-box-title">Price Details</p>
-
               <div className="price-row">
                 <span>Subtotal ({totalItems} item{totalItems !== 1 ? "s" : ""})</span>
                 <span>{fmt(subtotal)}</span>
               </div>
-
               {(discountAmt > 0 || appliedCoupon?.type === "free") && (
                 <div className="price-row">
                   <span>Discount ({appliedCoupon.code})</span>
@@ -482,7 +485,6 @@ export default function Cart() {
                   </span>
                 </div>
               )}
-
               <div className="price-row">
                 <span>Delivery Fee</span>
                 {deliveryFee === 0
@@ -490,14 +492,11 @@ export default function Cart() {
                   : <span>{fmt(deliveryFee)}</span>
                 }
               </div>
-
               <div className="price-divider" />
-
               <div className="total-row">
                 <span className="total-label">Total</span>
                 <span className="total-amount">{fmt(total)}</span>
               </div>
-
               {discountAmt > 0 && (
                 <p className="savings-note">
                   🎉 You're saving {fmt(discountAmt)} on this order!
