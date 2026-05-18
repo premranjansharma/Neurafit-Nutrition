@@ -315,9 +315,9 @@ export default function TrackOrder() {
     }
     setLoading(true);
     try {
-      const res = await fetch(
-        `http://localhost:5000/api/orders/track/${orderId}?email=${email}`
-      );
+     const res = await fetch(
+  `${process.env.REACT_APP_BASE_URL}/api/orders/track/${orderId}?email=${email}`
+);
       const data = await res.json();
       if (!res.ok) {
         alert(data.message || "Order not found");
