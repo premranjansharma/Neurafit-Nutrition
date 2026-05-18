@@ -20,13 +20,13 @@ const values = [
 const teamMembers = [
   {
     id: 1,
-    name: "Ravi",
+    name: "Ravi Prakash",
     role: "Founder & Vision Lead",
     image: "ravi.jpg",
     bio: "Drives strategy, innovation, and long-term brand vision for Neurafit Nutrition. Rishav combines business insight with a passion for fitness excellence, ensuring every decision aligns with the brand's mission to empower peak performance.",
     isFounder: true,
-    founderTitle: "Rishav - Founder & Vision Lead of Neurafit Nutrition",
-    founderDesc: "Rishav is the visionary founder of Neurafit Nutrition, passionate about creating premium supplements that truly deliver results. With strategic expertise and a deep commitment to fitness and performance, he leads the brand's innovation and growth.",
+    founderTitle: "Ravi Prakash - Founder & Vision Lead of Neurafit Nutrition",
+    founderDesc: "Ravi Prakash is the visionary founder of Neurafit Nutrition, passionate about creating premium supplements that truly deliver results. With strategic expertise and a deep commitment to fitness and performance, he leads the brand's innovation and growth.",
     founderQuote: "Neurafit Nutrition is about more than supplements—it's about building a community of champions who refuse to settle. We're here to fuel your strength, ignite your performance, and help you become the best version of yourself."
   },
   {
