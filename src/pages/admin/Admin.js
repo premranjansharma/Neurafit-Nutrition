@@ -176,6 +176,7 @@ export default function Admin({ setProducts: setParentProducts, offers, setOffer
       if (list.length >= 0) {
         const formatted = list.map(o => ({
           id: o._id,
+          orderId: o.orderId,
           name: o.guestInfo?.name || o.user?.name || "Customer",
           phone: o.guestInfo?.phone || "N/A",
           address: o.guestInfo?.address || "N/A",
@@ -778,7 +779,7 @@ export default function Admin({ setProducts: setParentProducts, offers, setOffer
                   {orders.slice(0, 5).map(o => (
                     <div className="recent-order-card" key={o.id} onClick={()=>{setSelected(o);setNewStatus(o.status);setTracking(o.trackingId||"");}}>
                       <div className="roc-top">
-                        <span className="roc-id">Order #{o.id?.slice(-6).toUpperCase()}</span>
+                        <span className="roc-id">Order #{o.orderId}</span>
                         <div style={{display:"flex",alignItems:"center",gap:"8px"}}>
                           <span className="roc-time">{o.time}</span>
                           <StatusBadge status={o.status}/>
