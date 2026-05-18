@@ -27,6 +27,9 @@ import Profile from "./components/Profile";
 import PrivateRoute from "./components/PrivateRoute";
 import ContentManager from "./pages/admin/ContentManager";
 import { AuthProvider } from "./pages/admin/AuthContext";
+import ProductDetails from "./components/ProductDetails";
+import OrderSuccess from "./components/OrderSuccess";
+
 
 import "./style.css";
 import "./style1.css";
@@ -290,6 +293,8 @@ useEffect(() => {
           <Route path="/privacy-policy"  element={<IronFuelPrivacy />} />
           <Route path="/terms"           element={<IronFuelTerms />} />
           <Route path="/admin/content" element={<ContentManager />} />
+          <Route path="/products/:id" element={<ProductDetails />} />
+          <Route path="/order-success" element={<OrderSuccess />} />
 
 
           {/* ✅ /admin — login gate Admin.jsx ke andar hai */}
