@@ -399,7 +399,7 @@ export default function TrackOrder() {
                 <div>
                   <p style={styles.orderId}>Order ID</p>
                   <p style={styles.orderIdVal}>
-                    {String(order._id).slice(-10).toUpperCase()}
+                   {order.orderId}
                   </p>
                 </div>
                 <span style={styles.statusBadge(order.status?.toLowerCase())}>
