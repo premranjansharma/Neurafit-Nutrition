@@ -1,11 +1,14 @@
 import React, { useState, useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
 
 export default function Products({ products }) {
   const { addToCart } = useContext(CartContext);
   const [addedId, setAddedId] = useState(null);
   const [activeFilter, setActiveFilter] = useState("All");
+  const navigate = useNavigate();
+
+
 if (!Array.isArray(products)) return <div style={{textAlign:"center",padding:"80px",color:"#aaa"}}>⏳ Loading...</div>;
   const filters = ["All", ...new Set(products.map((p) => p.category || "Neurafit Nutrition"))];
 
@@ -53,17 +56,18 @@ if (!Array.isArray(products)) return <div style={{textAlign:"center",padding:"80
         <div className="products-section">
           <div className="products-grid">
             {filtered.map((product) => (
-              <div className="products-card" key={product._id}>  
+              <div
+  className="products-card"
+  key={product._id}
+  onClick={() => navigate(`/products/${product._id}`)}
+  style={{ cursor: "pointer" }}
+> 
 
                 {/* IMAGE */}
                 <div className="products-card__img-wrap">
                   {product.images?.[0] ? (
                     <img
-               src={
-        product.images[0].startsWith("http")
-          ? product.images[0]
-          : `${process.env.REACT_APP_BASE_URL}/${product.images[0].replace(/^\/+/, "")}`
-                      }
+               src={product.images?.[0] || "/placeholder.png"}
                       alt={product.name}
                       className="products-card__img"
                     />
@@ -89,7 +93,10 @@ if (!Array.isArray(products)) return <div style={{textAlign:"center",padding:"80
                     ) : (
                       <button
                         className={`products-card__btn ${addedId === product._id ? "products-card__btn--added" : ""}`}  
-                        onClick={() => handleAdd(product)}
+                        onClick={(e) => {
+                        e.stopPropagation();
+                       handleAdd(product);
+                           }}
                       >
                         {addedId === product._id ? "✓ Added!" : "Add to Cart"} 
                       </button>
