@@ -60,10 +60,12 @@ export default function ProductCard({ product }) {
   };
 
   const handleCardClick = () => {
-    if (product?._id) {
-      navigate(`/products/${product._id}`);
-    }
-  };
+  alert("clicked");
+
+  if (product?._id) {
+    navigate(`/products/${product._id}`);
+  }
+};
 
   // Validation checks
   if (!product) {
