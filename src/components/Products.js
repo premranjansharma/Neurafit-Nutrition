@@ -56,15 +56,22 @@ if (!Array.isArray(products)) return <div style={{textAlign:"center",padding:"80
         <div className="products-section">
           <div className="products-grid">
             {filtered.map((product) => (
-              <div
+     <div
   className="products-card"
   key={product._id}
   onClick={() => navigate(`/products/${product._id}`)}
-  style={{ cursor: "pointer" }}
-> 
+  style={{
+    cursor: "pointer",
+    position: "relative",
+    zIndex: 10,
+  }}
+>
 
                 {/* IMAGE */}
-                <div className="products-card__img-wrap">
+              <div
+  className="products-card__img-wrap"
+  style={{ pointerEvents: "none" }}
+>
                   {product.images?.[0] ? (
                     <img
                src={product.images?.[0] || "/placeholder.png"}
