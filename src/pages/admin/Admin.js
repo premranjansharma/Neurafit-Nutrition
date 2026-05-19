@@ -842,7 +842,7 @@ export default function Admin({ setProducts: setParentProducts, offers, setOffer
                       ? <tr><td colSpan={6} style={{textAlign:"center",padding:"32px",color:"rgba(255,255,255,0.2)"}}>Koi order nahi mila</td></tr>
                       : filteredOrders.map(o=>(
                         <tr key={o.id} onClick={()=>{setSelected(o);setNewStatus(o.status);setTracking(o.trackingId||"");}}>
-                          <td style={{color:"rgba(0,255,136,0.55)",fontSize:"10px"}}>#{o.id}</td>
+                         <td style={{color:"rgba(0,255,136,0.55)",fontSize:"10px"}}> ORDER #{o.orderId || o.id} </td>
                           <td><div className="oname">{o.name}</div><div className="oid">{o.phone}</div></td>
                           <td style={{color:"rgba(255,255,255,0.45)"}}>{o.item}</td>
                           <td style={{color:"#00ff88",fontWeight:600}}>₹{o.amount?.toLocaleString("en-IN")}</td>
