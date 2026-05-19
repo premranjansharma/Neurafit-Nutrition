@@ -353,16 +353,9 @@ export default function ProductCard({ product, outOfStock = false }) {
 
   if (!product) return null;
 
-  const currentImage = isImageError ? "/placeholder.png" : images[index];
+const currentImage = isImageError ? "/placeholder.png" : images[index];
 
-  const btnStyle = {
-    ...styles.addBtn,
-    ...(btnState === "active" ? styles.addBtnActive : {}),
-    ...(btnState === "added" ? styles.addBtnAdded : {}),
-    ...(outOfStock ? { background: "#ccc", cursor: "not-allowed" } : {}),
-  };
-
-  return (
+return (
     <div
       style={{ ...styles.card, ...(isHovered ? styles.cardHover : {}) }}
       onClick={handleCardClick}
