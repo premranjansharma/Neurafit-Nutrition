@@ -110,7 +110,7 @@ function Home({ products }) {
           </p>
           <div className="hero-stats">
             <div className="hero-stat">
-              <span className="hero-stat__num">9.7g</span>
+              <span className="hero-stat__num">g</span>
               <span className="hero-stat__label">Protein per 100g</span>
             </div>
             <div className="hero-stat__divider" />
