@@ -99,7 +99,7 @@ function Home({ products }) {
         </div>
 
         <div className="hero-left">
-          <span className="hero-badge">100% Natural</span>
+          <span className="hero-badge">100%</span>
           <h1 className="hero-title">
             Godmode.<br />
             <span className="hero-title--accent">Live Better.</span>
