@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-// ✅ FIX 2: Fallback add kiya
-const API = process.env.REACT_APP_BASE_URL || "http://localhost:5000";
+
+const API = process.env.REACT_APP_BASE_URL;
 
 export default function Signup() {
   const [form, setForm] = useState({
@@ -168,78 +168,169 @@ export default function Signup() {
           <div className="signup-divider" />
 
           {/* ── Personal Info ── */}
-          <div className="signup-grid">
-            <div>
-              <label className="signup-label">First Name *</label>
-              {/* ✅ FIX 5: value prop add kiya — controlled inputs */}
-              <input className="signup-input" name="firstName"
-                placeholder="Prem" value={form.firstName} onChange={handleChange} />
-            </div>
-            <div>
-              <label className="signup-label">Last Name</label>
-              <input className="signup-input" name="lastName"
-                placeholder="Sharma" value={form.lastName} onChange={handleChange} />
-            </div>
-            <div>
-              <label className="signup-label">Email *</label>
-              <input className="signup-input" name="email" type="email"
-                placeholder="prem@email.com" value={form.email} onChange={handleChange} />
-            </div>
-            <div>
-              <label className="signup-label">Phone</label>
-              <input className="signup-input" name="phone" type="tel"
-                placeholder="9876543210" maxLength={10} value={form.phone} onChange={handleChange} />
-            </div>
-          </div>
+         <div className="signup-grid">
+  <div>
+    <label className="signup-label">First Name *</label>
 
-          {/* ── Address ── */}
-          <div className="signup-section-title">📍 Address</div>
-          <div className="signup-grid">
-            <div className="signup-full">
-              <label className="signup-label">Complete Address</label>
-              <textarea className="signup-textarea" name="address"
-                placeholder="House No, Street, Area..."
-                value={form.address} onChange={handleChange} />
-            </div>
-            <div>
-              <label className="signup-label">PIN Code</label>
-              <input className="signup-input" name="pincode"
-                placeholder="846005" maxLength={6}
-                value={form.pincode} onChange={handleChange} />
-            </div>
-            <div>
-              <label className="signup-label">City</label>
-              <input className="signup-input" name="city"
-                placeholder="Darbhanga" value={form.city} onChange={handleChange} />
-            </div>
-            <div>
-              <label className="signup-label">District</label>
-              <input className="signup-input" name="district"
-                placeholder="Darbhanga" value={form.district} onChange={handleChange} />
-            </div>
-            <div>
-              <label className="signup-label">State</label>
-              <input className="signup-input" name="state"
-                placeholder="Bihar" value={form.state} onChange={handleChange} />
-            </div>
-          </div>
+    <input
+      className="signup-input"
+      name="firstName"
+      placeholder="Prem"
+      value={form.firstName}
+      onChange={handleChange}
+      required
+    />
+  </div>
 
-          {/* ── Password ── */}
-          <div className="signup-section-title">🔒 Password</div>
-          <div className="signup-grid">
-            <div>
-              <label className="signup-label">Password *</label>
-              <input className="signup-input" name="password" type="password"
-                placeholder="Min 6 characters"
-                value={form.password} onChange={handleChange} />
-            </div>
-            <div>
-              <label className="signup-label">Confirm Password *</label>
-              <input className="signup-input" name="confirmPassword" type="password"
-                placeholder="Re-enter password"
-                value={form.confirmPassword} onChange={handleChange} />
-            </div>
-          </div>
+  <div>
+    <label className="signup-label">Last Name</label>
+
+    <input
+      className="signup-input"
+      name="lastName"
+      placeholder="Sharma"
+      value={form.lastName}
+      onChange={handleChange}
+    />
+  </div>
+
+  <div>
+    <label className="signup-label">Email *</label>
+
+    <input
+      className="signup-input"
+      name="email"
+      type="email"
+      placeholder="prem@email.com"
+      value={form.email}
+      onChange={handleChange}
+      required
+    />
+  </div>
+
+  <div>
+    <label className="signup-label">Phone</label>
+
+    <input
+      className="signup-input"
+      name="phone"
+      type="tel"
+      placeholder="9876543210"
+      maxLength={10}
+      minLength={10}
+      required
+      value={form.phone}
+      onChange={handleChange}
+    />
+  </div>
+</div>
+
+{/* ── Address ── */}
+<div className="signup-section-title">📍 Address</div>
+
+<div className="signup-grid">
+  <div className="signup-full">
+    <label className="signup-label">Complete Address</label>
+
+    <textarea
+      className="signup-textarea"
+      name="address"
+      placeholder="House No, Street, Area..."
+      value={form.address}
+      onChange={handleChange}
+      required
+    />
+  </div>
+
+  <div>
+    <label className="signup-label">PIN Code</label>
+
+    <input
+      className="signup-input"
+      name="pincode"
+      placeholder="846005"
+      maxLength={6}
+      minLength={6}
+      required
+      value={form.pincode}
+      onChange={handleChange}
+    />
+  </div>
+
+  <div>
+    <label className="signup-label">City</label>
+
+    <input
+      className="signup-input"
+      name="city"
+      placeholder="Darbhanga"
+      value={form.city}
+      onChange={handleChange}
+      required
+    />
+  </div>
+
+  <div>
+    <label className="signup-label">District</label>
+
+    <input
+      className="signup-input"
+      name="district"
+      placeholder="Darbhanga"
+      value={form.district}
+      onChange={handleChange}
+      required
+    />
+  </div>
+
+  <div>
+    <label className="signup-label">State</label>
+
+    <input
+      className="signup-input"
+      name="state"
+      placeholder="Bihar"
+      value={form.state}
+      onChange={handleChange}
+      required
+    />
+  </div>
+</div>
+
+{/* ── Password ── */}
+<div className="signup-section-title">🔒 Password</div>
+
+<div className="signup-grid">
+  <div>
+    <label className="signup-label">Password *</label>
+
+    <input
+      className="signup-input"
+      name="password"
+      type="password"
+      placeholder="Min 6 characters"
+      value={form.password}
+      onChange={handleChange}
+      minLength={6}
+      required
+    />
+  </div>
+
+  <div>
+    <label className="signup-label">Confirm Password *</label>
+
+    <input
+      className="signup-input"
+      name="confirmPassword"
+      type="password"
+      placeholder="Re-enter password"
+      value={form.confirmPassword}
+      onChange={handleChange}
+      minLength={6}
+      required
+    />
+  </div>
+</div>
 
           {error && <div className="signup-err">❌ {error}</div>}
 
