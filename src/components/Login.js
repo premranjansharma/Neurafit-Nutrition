@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-// ✅ FIX 2: Fallback add kiya
-const API = process.env.REACT_APP_BASE_URL || "http://localhost:5000";
+
+const API = process.env.REACT_APP_BASE_URL;
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
