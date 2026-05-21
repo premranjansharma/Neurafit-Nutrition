@@ -275,7 +275,10 @@ if (!emailRegex.test(form.email)) {
       minLength={6}
       required
       value={form.pincode}
-      onChange={handleChange}
+      onChange={(e) => {
+  const onlyNums = e.target.value.replace(/\D/g, "");
+  setForm({ ...form, pincode: onlyNums });
+}}
     />
   </div>
 
