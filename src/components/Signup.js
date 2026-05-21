@@ -20,24 +20,36 @@ export default function Signup() {
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSignup = async () => {
-    setError("");
+ const handleSignup = async () => {
+  setError("");
 
-    if (!form.firstName || !form.email || !form.password) {
-      setError("First name, email aur password required hain");
-      return;
-    }
-    if (form.password.length < 6) {
-      setError("Password kam se kam 6 characters ka hona chahiye");
-      return;
-    }
-    if (form.password !== form.confirmPassword) {
-      setError("Passwords match nahi kar rahe");
-      return;
-    }
+  if (
+    !form.firstName ||
+    !form.email ||
+    !form.phone ||
+    !form.password
+  ) {
+    setError("Sab required fields bharo");
+    return;
+  }
 
-    try {
-      setLoading(true);
+  if (form.phone.length !== 10) {
+    setError("Valid 10 digit phone number enter karo");
+    return;
+  }
+
+  if (form.password.length < 6) {
+    setError("Password kam se kam 6 characters ka hona chahiye");
+    return;
+  }
+
+  if (form.password !== form.confirmPassword) {
+    setError("Passwords match nahi kar rahe");
+    return;
+  }
+
+  try {
+    setLoading(true);
 
       // ✅ FIX 1: /api prefix add kiya
       const res = await fetch(`${API}/api/auth/signup`, {
