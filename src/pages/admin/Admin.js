@@ -221,24 +221,33 @@ export default function Admin({ setProducts: setParentProducts, offers, setOffer
       .catch(err => console.error("Offers fetch error:", err));
   }, [isAdmin]);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-    fetch(`${API}/api/coupons/admin`, { headers: { Authorization: `Bearer ${token}` } })
-      .then(r => r.json())
-      .then(data => { if (Array.isArray(data)) setCoupons(data); })
-      .catch(err => console.error("Coupons fetch error:", err));
-  }, [isAdmin]);
+  
+ useEffect(() => {
+  const token = localStorage.getItem("token");
+  if (!token) return;
+  fetch(`${API}/api/coupons/admin`, { headers: { Authorization: `Bearer ${token}` } })
+    .then(r => r.json())
+    .then(data => {
+      const list = Array.isArray(data) ? data : data.coupons || [];
+      setCoupons(list);
+    })
+    .catch(err => console.error("Coupons fetch error:", err));
+}, [isAdmin]);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-    fetch(`${API}/api/users`, { headers: { Authorization: `Bearer ${token}` } })
-      .then(r => r.json())
-      .then(data => { if (Array.isArray(data)) setUsers(data); })
-      .catch(err => console.error("Users fetch error:", err));
-  }, [isAdmin]);
+useEffect(() => {
+  const token = localStorage.getItem("token");
+  if (!token) return;
+  fetch(`${API}/api/users`, { headers: { Authorization: `Bearer ${token}` } })
+    .then(r => r.json())
+    .then(data => {
+      const list = Array.isArray(data) ? data : data.users || [];
+      setUsers(list);
+    })
+    .catch(err => console.error("Users fetch error:", err));
+}, [isAdmin]);
 
+
+  
   // ── Coupon handlers ──
   const openCreateCoupon = () => {
     setEditingCoupon(null);
@@ -512,7 +521,7 @@ export default function Admin({ setProducts: setParentProducts, offers, setOffer
       <div className="alp"><div className="alc">
         <span className="al-ic">⚙️</span>
         <div className="al-t">Admin Panel</div>
-        <div className="al-s">IronFuel Nutrition</div>
+        <div className="al-s">Neurafit Nutrition</div>
         <div className="al-div"/>
         <label className="al-lbl">Email</label>
         <input className="al-inp" placeholder="Enter email" value={username} onChange={e=>setUsername(e.target.value)}/>
