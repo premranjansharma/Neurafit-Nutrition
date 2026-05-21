@@ -19,16 +19,26 @@ export default function Login() {
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleLogin = async () => {
-    setError("");
+ const handleLogin = async () => {
+  setError("");
 
-    if (!form.email || !form.password) {
-      setError("Email aur password required hai");
-      return;
-    }
+  if (!form.email || !form.password) {
+    setError("Email aur password required hai");
+    return;
+  }
 
-    try {
-      setLoading(true);
+  if (!form.email.includes("@")) {
+    setError("Valid email enter karo");
+    return;
+  }
+
+  if (form.password.length < 6) {
+    setError("Password minimum 6 characters ka hona chahiye");
+    return;
+  }
+
+  try {
+    setLoading(true);
 
       // ✅ FIX 1: /api prefix add kiya
       const res  = await fetch(`${API}/api/auth/login`, {
@@ -172,23 +182,26 @@ export default function Login() {
 
           <label className="login-label">Email *</label>
           <input
-            className="login-input"
-            type="email"
-            name="email"
-            placeholder="Enter email"
-            value={form.email}
-            onChange={handleChange}
-          />
+  className="login-input"
+  type="email"
+  name="email"
+  placeholder="Enter email"
+  value={form.email}
+  onChange={handleChange}
+  required
+/>
 
-          <label className="login-label">Password *</label>
-          <input
-            className="login-input"
-            type="password"
-            name="password"
-            placeholder="Enter password"
-            value={form.password}
-            onChange={handleChange}
-          />
+         <label className="login-label">Password *</label>
+<input
+  className="login-input"
+  type="password"
+  name="password"
+  placeholder="Enter password"
+  value={form.password}
+  onChange={handleChange}
+  minLength={6}
+  required
+/>
 
           {error && <div className="login-error">❌ {error}</div>}
 
