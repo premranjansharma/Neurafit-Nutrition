@@ -450,27 +450,57 @@ export default function Checkout() {
 
   // ── COD ──
   const handleCOD = async () => {
-    setLoading(true);
-    try {
-      const res  = await fetch(`${API_BASE}/api/orders`, { // ✅ FIX 1
-        method  : "POST",
-        headers : {
-          "Content-Type": "application/json",
-          ...authHeader(), // ✅ FIX 2: auth token
-        },
-        body    : JSON.stringify({ ...getOrderData(), paymentMethod: "COD", status: "pending" }),
-      });
-      const data = await res.json();
-      if (!res.ok) { alert(data.message || "Order failed"); return; }
-      clearCart();
-      navigate("/order-success"); // ✅ FIX 3: navigate after order
-    } catch (err) {
-      console.error(err);
-      alert("Server error");
-    } finally {
-      setLoading(false);
+  setLoading(true);
+
+  try {
+    const res = await fetch(`${API_BASE}/api/orders`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...authHeader(),
+      },
+      body: JSON.stringify({
+        ...getOrderData(),
+        paymentMethod: "COD",
+        status: "pending",
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || "Order failed");
+      return;
     }
-  };
+
+    clearCart();
+
+    navigate("/order-success", {
+      state: {
+        order: {
+          orderId: data._id || data.orderId,
+          customerName: form.name,
+          customerEmail: form.email,
+          paymentStatus: "Pending",
+          orderDate: new Date().toISOString(),
+          estimatedDelivery: new Date(
+            Date.now() + 5 * 24 * 60 * 60 * 1000
+          ).toISOString(),
+          subtotal,
+          shipping: delivery,
+          total,
+          currency: "INR",
+        },
+      },
+    });
+
+  } catch (err) {
+    console.error(err);
+    alert("Server error");
+  } finally {
+    setLoading(false);
+  }
+};
 
   // ── Razorpay ──
   const handleRazorpay = async () => {
@@ -533,11 +563,26 @@ export default function Checkout() {
             const ordData = await ordRes.json();
             if (!ordRes.ok) { alert(ordData.message || "Order save nahi hua."); setLoading(false); return; }
 
-            clearCart();
-            navigate("/order-success"); // ✅ FIX 3
-          } catch { alert("Order save error. Support se contact karo."); }
-          finally  { setLoading(false); }
-        },
+          clearCart();
+
+navigate("/order-success", {
+  state: {
+    order: {
+      orderId: ordData._id || ordData.orderId,
+      customerName: form.name,
+      customerEmail: form.email,
+      paymentStatus: "Paid",
+      orderDate: new Date().toISOString(),
+      estimatedDelivery: new Date(
+        Date.now() + 5 * 24 * 60 * 60 * 1000
+      ).toISOString(),
+      subtotal,
+      shipping: delivery,
+      total,
+      currency: "INR",
+    },
+  },
+});
 
         prefill : { name: form.name, email: form.email, contact: form.phone },
         theme   : { color: "#c8a96e" },
