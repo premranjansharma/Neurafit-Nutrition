@@ -37,6 +37,12 @@ export default function Signup() {
     setError("Valid 10 digit phone number enter karo");
     return;
   }
+   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+if (!emailRegex.test(form.email)) {
+  setError("Valid email enter karo");
+  return;
+}
 
   if (form.password.length < 6) {
     setError("Password kam se kam 6 characters ka hona chahiye");
@@ -223,17 +229,21 @@ export default function Signup() {
   <div>
     <label className="signup-label">Phone</label>
 
-    <input
-      className="signup-input"
-      name="phone"
-      type="tel"
-      placeholder="9876543210"
-      maxLength={10}
-      minLength={10}
-      required
-      value={form.phone}
-      onChange={handleChange}
-    />
+   <input
+  className="signup-input"
+  name="phone"
+  type="tel"
+  placeholder="9876543210"
+  maxLength={10}
+  minLength={10}
+  required
+  value={form.phone}
+  onChange={(e) => {
+    const onlyNums = e.target.value.replace(/\D/g, "");
+    setForm({ ...form, phone: onlyNums });
+  }}
+/>
+    
   </div>
 </div>
 
