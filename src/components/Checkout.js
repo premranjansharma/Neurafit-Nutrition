@@ -625,9 +625,20 @@ export default function Checkout() {
                 <input className="form-input" type="email" placeholder="prem@email.com" value={form.email} onChange={set("email")} />
               </div>
               <div className="form-grp">
-                <label className="form-label">Phone *</label>
-                <input className="form-input" type="tel" placeholder="9876543210" maxLength={10} value={form.phone} onChange={set("phone")} />
-              </div>
+  <label className="form-label">Phone *</label>
+
+  <input
+    className="form-input"
+    type="tel"
+    placeholder="7739740853"
+    maxLength={10}
+    value={form.phone}
+    onChange={(e) => {
+      const onlyNums = e.target.value.replace(/\D/g, "");
+      setForm((prev) => ({ ...prev, phone: onlyNums }));
+    }}
+  />
+</div>
             </div>
 
             <div className="form-section-label">Shipping Address</div>
@@ -655,15 +666,64 @@ export default function Checkout() {
                 <span className={`location-status ${locStatus.type}`}>{locStatus.msg}</span>
               )}
             </div>
+<div className="form-grid" style={{ marginBottom: 8 }}>
 
-            <div className="form-grid" style={{ marginBottom: 8 }}>
-              <div className="form-grp">
-                <label className="form-label">Pincode *</label>
-                <input
-                  className={`form-input ${pinHint.type === "ok" ? "input-success" : pinHint.type === "err" ? "input-error" : ""}`}
-                  placeholder="846004" maxLength={6} value={form.pincode} onChange={set("pincode")} />
-                {pinHint.msg && <span className={`pin-hint ${pinHint.type}`}>{pinHint.msg}</span>}
-              </div>
+    <div className="form-grp">
+  <label className="form-label">Pincode *</label>
+
+  <input
+    className={`form-input ${
+      pinHint.type === "ok"
+        ? "input-success"
+        : pinHint.type === "err"
+        ? "input-error"
+        : ""
+    }`}
+   placeholder="846004"
+      maxLength={6}
+      value={form.pincode}
+      onChange={(e) => {
+        const onlyNums = e.target.value.replace(/\D/g, "");
+        setForm((prev) => ({
+          ...prev,
+          pincode: onlyNums,
+        }));
+
+        if (onlyNums.length === 6) {
+          fetchPincodeData(onlyNums).then((res) => {
+            if (res.success) {
+              setForm((prev) => ({
+                ...prev,
+                city: res.city,
+                state: res.state,
+              }));
+
+              setPinHint({
+                msg: `✓ ${res.city}, ${res.state}`,
+                type: "ok",
+              });
+            } else {
+              setPinHint({
+                msg: "Invalid pincode",
+                type: "err",
+              });
+            }
+          });
+        } else {
+          setPinHint({
+            msg: "",
+            type: "",
+          });
+        }
+      }}
+    />
+
+  {pinHint.msg && (
+    <span className={`pin-hint ${pinHint.type}`}>
+      {pinHint.msg}
+    </span>
+  )}
+</div>
               <div className="form-grp">
                 <label className="form-label">City</label>
                 <input className="form-input" placeholder="Darbhanga" value={form.city} onChange={set("city")} />
