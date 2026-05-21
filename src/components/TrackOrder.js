@@ -12,7 +12,7 @@ const STATUS_LABELS = {
 const styles = {
   page: {
     minHeight: "100vh",
-    background: "#fff",
+    background: "linear-gradient(135deg, #0f2e1e 0%, #1a4a2e 40%, #ffffff 100%)",
     display: "flex",
     alignItems: "flex-start",
     justifyContent: "center",
