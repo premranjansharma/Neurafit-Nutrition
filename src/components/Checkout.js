@@ -503,99 +503,103 @@ export default function Checkout() {
 };
 
   // ── Razorpay ──
-  const handleRazorpay = async () => {
-    setLoading(true);
-    const loaded = await loadRazorpayScript();
-    if (!loaded) { alert("Razorpay load nahi hua. Internet check karo."); setLoading(false); return; }
+ const handleRazorpay = async () => {
+  setLoading(true);
+  const loaded = await loadRazorpayScript();
+  if (!loaded) { alert("Razorpay load nahi hua. Internet check karo."); setLoading(false); return; }
 
-    try {
-      // STEP 1 — Order create
-      const createRes = await fetch(`${API_BASE}/api/payment/razorpay/create`, { // ✅ FIX 1
-        method  : "POST",
-        headers : { "Content-Type": "application/json", ...authHeader() },
-        body    : JSON.stringify({ amount: total, currency: "INR" }),
-      });
+  try {
+    // STEP 1 — Order create
+    const createRes = await fetch(`${API_BASE}/api/payment/razorpay/create`, {
+      method  : "POST",
+      headers : { "Content-Type": "application/json", ...authHeader() },
+      body    : JSON.stringify({ amount: total, currency: "INR" }),
+    });
+    if (!createRes.ok) {
+      const e = await createRes.json();
+      alert(e.message || "Order create nahi hua.");
+      setLoading(false); return;
+    }
+    const { paymentDbId, razorpayOrderId, amount: amountPaise, currency, keyId } = await createRes.json();
 
-      if (!createRes.ok) {
-        const e = await createRes.json();
-        alert(e.message || "Order create nahi hua.");
-        setLoading(false); return;
-      }
-      const { paymentDbId, razorpayOrderId, amount: amountPaise, currency, keyId } = await createRes.json();
+    // STEP 2 — Razorpay popup
+    const opts = {
+      key         : keyId,
+      amount      : amountPaise,
+      currency,
+      name        : "Neurafit Nutrition",
+      description : "Order Payment",
+      order_id    : razorpayOrderId,
 
-      // STEP 2 — Razorpay popup
-      const opts = {
-        key         : keyId,
-        amount      : amountPaise,
-        currency,
-        name        : "Neurafit Nutrition",
-        description : "Order Payment",
-        order_id    : razorpayOrderId,
+      handler: async (response) => {
+        try {
+          // STEP 3 — Verify
+          const verRes = await fetch(`${API_BASE}/api/payment/razorpay/verify`, {
+            method  : "POST",
+            headers : { "Content-Type": "application/json", ...authHeader() },
+            body    : JSON.stringify({
+              paymentDbId,
+              razorpayOrderId  : response.razorpay_order_id,
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpaySignature: response.razorpay_signature,
+            }),
+          });
+          const verData = await verRes.json();
+          if (!verData.success) { alert(verData.message || "Verify fail."); setLoading(false); return; }
 
-        handler: async (response) => {
-          try {
-            // STEP 3 — Verify
-            const verRes  = await fetch(`${API_BASE}/api/payment/razorpay/verify`, { // ✅ FIX 1
-              method  : "POST",
-              headers : { "Content-Type": "application/json", ...authHeader() },
-              body    : JSON.stringify({
-                paymentDbId,
-                razorpayOrderId  : response.razorpay_order_id,
-                razorpayPaymentId: response.razorpay_payment_id,
-                razorpaySignature: response.razorpay_signature,
-              }),
-            });
-            const verData = await verRes.json();
-            if (!verData.success) { alert(verData.message || "Verify fail."); setLoading(false); return; }
-
-            // STEP 4 — Save order
-            const ordRes  = await fetch(`${API_BASE}/api/orders`, { // ✅ FIX 1
-              method  : "POST",
-              headers : { "Content-Type": "application/json", ...authHeader() },
-              body    : JSON.stringify({
-                ...getOrderData(),
-                paymentMethod     : "Razorpay",
-                status            : "paid",
-                paymentId         : paymentDbId,
-                razorpayPaymentId : response.razorpay_payment_id,
-              }),
-            });
-            const ordData = await ordRes.json();
-            if (!ordRes.ok) { alert(ordData.message || "Order save nahi hua."); setLoading(false); return; }
+          // STEP 4 — Save order
+          const ordRes = await fetch(`${API_BASE}/api/orders`, {
+            method  : "POST",
+            headers : { "Content-Type": "application/json", ...authHeader() },
+            body    : JSON.stringify({
+              ...getOrderData(),
+              paymentMethod     : "Razorpay",
+              status            : "paid",
+              paymentId         : paymentDbId,
+              razorpayPaymentId : response.razorpay_payment_id,
+            }),
+          });
+          const ordData = await ordRes.json();
+          if (!ordRes.ok) { alert(ordData.message || "Order save nahi hua."); setLoading(false); return; }
 
           clearCart();
+          navigate("/order-success", {
+            state: {
+              order: {
+                orderId          : ordData._id || ordData.orderId,
+                customerName     : form.name,
+                customerEmail    : form.email,
+                paymentStatus    : "Paid",
+                orderDate        : new Date().toISOString(),
+                estimatedDelivery: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+                subtotal,
+                shipping         : delivery,
+                total,
+                currency         : "INR",
+              },
+            },
+          });
 
-navigate("/order-success", {
-  state: {
-    order: {
-      orderId: ordData._id || ordData.orderId,
-      customerName: form.name,
-      customerEmail: form.email,
-      paymentStatus: "Paid",
-      orderDate: new Date().toISOString(),
-      estimatedDelivery: new Date(
-        Date.now() + 5 * 24 * 60 * 60 * 1000
-      ).toISOString(),
-      subtotal,
-      shipping: delivery,
-      total,
-      currency: "INR",
-    },
-  },
-});
+        } catch (err) {        // ← closes handler's try
+          console.error(err);
+          alert("Payment verification error");
+          setLoading(false);
+        }
+      },                       // ← closes handler function
 
-        prefill : { name: form.name, email: form.email, contact: form.phone },
-        theme   : { color: "#c8a96e" },
-        modal   : { ondismiss: () => setLoading(false) },
-      };
+      prefill : { name: form.name, email: form.email, contact: form.phone },
+      theme   : { color: "#c8a96e" },
+      modal   : { ondismiss: () => setLoading(false) },
+    };                         // ← closes opts object
 
-      new window.Razorpay(opts).open();
-    } catch (err) {
-      console.error(err);
-      alert("Payment error");
-      setLoading(false);
-    }
-  };
+    new window.Razorpay(opts).open();
+
+  } catch (err) {              // ← closes outer try
+    console.error(err);
+    alert("Payment error");
+    setLoading(false);
+  }
+};
 
   const handlePayment = () => {
     if (cart.length === 0)  { alert("Cart empty!"); return; }
