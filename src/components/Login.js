@@ -27,7 +27,9 @@ export default function Login() {
     return;
   }
 
-  if (!form.email.includes("@")) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailRegex.test(form.email)) {
     setError("Valid email enter karo");
     return;
   }
