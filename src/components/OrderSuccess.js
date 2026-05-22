@@ -1,7 +1,7 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import logo from "../assets/logo-nav.png";
+
 /* ─────────────────────────────────────────────
    Keyframe / global style injection
 ───────────────────────────────────────────── */
@@ -25,10 +25,6 @@ const injectStyles = () => {
       0%   { transform: scale(0.8); opacity: 0.6; }
       100% { transform: scale(2.4); opacity: 0; }
     }
-    @keyframes os-scanline {
-      0%   { background-position: 0 0; }
-      100% { background-position: 0 100px; }
-    }
     @keyframes os-pulse {
       0%, 100% { box-shadow: 0 0 0 0 rgba(0,255,136,0.35); }
       50%       { box-shadow: 0 0 0 14px rgba(0,255,136,0); }
@@ -36,21 +32,9 @@ const injectStyles = () => {
     @keyframes os-dash {
       to { stroke-dashoffset: 0; }
     }
-    @keyframes os-numberCount {
-      from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes os-glowLine {
-      0%,100% { opacity: 0.4; }
-      50%      { opacity: 1; }
-    }
     @keyframes os-floatDot {
       0%,100% { transform: translateY(0px); }
       50%      { transform: translateY(-10px); }
-    }
-    @keyframes os-bgShift {
-      0%,100% { background-position: 0% 50%; }
-      50%      { background-position: 100% 50%; }
     }
 
     .os-wrap * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -113,16 +97,15 @@ const injectStyles = () => {
 
     /* ── Brand bar ── */
     .os-brand {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 18px;
-      letter-spacing: 0.18em;
-      color: #00ff88;
-      text-transform: uppercase;
-      margin-bottom: 52px;
+      margin-bottom: 40px;
       opacity: 0;
       animation: os-fadeUp 0.5s ease forwards;
       animation-delay: 0.05s;
+    }
+    .os-brand img {
+      height: 60px;
+      object-fit: contain;
+      display: block;
     }
 
     /* ── Icon ring ── */
@@ -168,10 +151,7 @@ const injectStyles = () => {
       position: relative;
       z-index: 1;
     }
-    .os-check-svg {
-      width: 52px;
-      height: 52px;
-    }
+    .os-check-svg { width: 52px; height: 52px; }
     .os-check-circle {
       fill: none;
       stroke: rgba(0,255,136,0.2);
@@ -205,9 +185,8 @@ const injectStyles = () => {
       letter-spacing: -0.02em;
       color: #ffffff;
     }
-    .os-headline h1 span {
-      color: #00ff88;
-    }
+    .os-headline h1 span { color: #00ff88; }
+
     .os-subheadline {
       font-size: 15px;
       font-weight: 300;
@@ -284,12 +263,8 @@ const injectStyles = () => {
       align-items: center;
       gap: 8px;
     }
-    .os-row-key svg {
-      width: 14px;
-      height: 14px;
-      opacity: 0.5;
-      flex-shrink: 0;
-    }
+    .os-row-key svg { width: 14px; height: 14px; opacity: 0.5; flex-shrink: 0; }
+
     .os-row-val {
       font-size: 14px;
       font-weight: 500;
@@ -329,12 +304,7 @@ const injectStyles = () => {
       color: #ffc832;
       border: 1px solid rgba(255,200,50,0.25);
     }
-    .os-badge-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: currentColor;
-    }
+    .os-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 
     /* Total row */
     .os-total-row {
@@ -425,7 +395,7 @@ const injectStyles = () => {
     .os-btn-primary {
       background: linear-gradient(135deg, #00ff88, #00cc6a);
       color: #0b0f0c;
-      box-shadow: 0 4px 24px rgba(0,255,136,0.25), 0 0 0 0 rgba(0,255,136,0.2);
+      box-shadow: 0 4px 24px rgba(0,255,136,0.25);
     }
     .os-btn-primary:hover {
       transform: translateY(-2px);
@@ -444,16 +414,9 @@ const injectStyles = () => {
       box-shadow: 0 4px 16px rgba(0,255,136,0.08);
     }
 
-    .os-btn svg {
-      width: 16px;
-      height: 16px;
-      transition: transform 0.2s;
-      flex-shrink: 0;
-    }
+    .os-btn svg { width: 16px; height: 16px; transition: transform 0.2s; flex-shrink: 0; }
     .os-btn-primary:hover svg,
-    .os-btn-secondary:hover svg {
-      transform: translateX(3px);
-    }
+    .os-btn-secondary:hover svg { transform: translateX(3px); }
 
     /* ── Footer note ── */
     .os-footer-note {
@@ -477,11 +440,9 @@ const injectStyles = () => {
     .os-fallback {
       text-align: center;
       padding: 80px 24px;
+      animation: os-fadeUp 0.5s ease forwards;
     }
-    .os-fallback-icon {
-      font-size: 48px;
-      margin-bottom: 20px;
-    }
+    .os-fallback-icon { font-size: 48px; margin-bottom: 20px; }
     .os-fallback h2 {
       font-family: 'Syne', sans-serif;
       font-size: 22px;
@@ -579,102 +540,92 @@ const IconShop = () => (
 ───────────────────────────────────────────── */
 const OrderSuccess = () => {
   const navigate = useNavigate();
-const { orderId } = useParams();
-const location = useLocation();
+  const { orderId } = useParams();
+  const location = useLocation();
 
-const [mounted, setMounted] = useState(false);
-const [order, setOrder] = useState(null);
-const [loading, setLoading] = useState(true);
+  const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-useEffect(() => {
-  injectStyles();
-  setMounted(true);
+  useEffect(() => {
+    injectStyles();
 
-  // Checkout से state आई है तो सीधे use करो
-  if (location.state?.order) {
-    setOrder(location.state.order);
-    setLoading(false);
-    return;
-  }
+    // FIX 1: location.state se order seedha milta hai toh use karo
+    if (location.state?.order) {
+      setOrder(location.state.order);
+      setLoading(false);
+      return;
+    }
 
-  // अगर user directly URL खोले तो API call करो
-  if (!orderId) {
-    setLoading(false);
-    return;
-  }
+    // FIX 2: orderId nahi hai toh loading band karo
+    if (!orderId) {
+      setLoading(false);
+      return;
+    }
 
-  const fetchOrder = async (attempts = 3, delay = 1500) => {
-    const email = location.state?.order?.customerEmail || "";
+    // FIX 3: email ko closure ke bahar capture karo (stale closure se bachne ke liye)
+    const customerEmail = location.state?.order?.customerEmail ?? "";
 
-    for (let i = 0; i < attempts; i++) {
-      try {
-        const url = email
-          ? `${process.env.REACT_APP_BASE_URL}/api/orders/track/${orderId}?email=${encodeURIComponent(email)}`
-          : `${process.env.REACT_APP_BASE_URL}/api/orders/track/${orderId}`;
+    const fetchOrder = async (attempts = 3, delay = 1500) => {
+      for (let i = 0; i < attempts; i++) {
+        try {
+          const url = customerEmail
+            ? `${process.env.REACT_APP_BASE_URL}/api/orders/track/${orderId}?email=${encodeURIComponent(customerEmail)}`
+            : `${process.env.REACT_APP_BASE_URL}/api/orders/track/${orderId}`;
 
-        const res = await fetch(url);
+          const res = await fetch(url);
 
-        if (res.ok) {
-          const data = await res.json();
-          setOrder(data);
-          setLoading(false);
-          return;
-        }
+          if (res.ok) {
+            const data = await res.json();
+            setOrder(data);
+            setLoading(false);
+            return;
+          }
 
-        if (i < attempts - 1) {
-          await new Promise((r) => setTimeout(r, delay * (i + 1)));
-        }
-      } catch (err) {
-        console.error("Order fetch error:", err);
-        if (i < attempts - 1) {
-          await new Promise((r) => setTimeout(r, delay * (i + 1)));
+          if (i < attempts - 1) {
+            await new Promise((r) => setTimeout(r, delay * (i + 1)));
+          }
+        } catch (err) {
+          console.error(`Order fetch error (attempt ${i + 1}):`, err);
+          if (i < attempts - 1) {
+            await new Promise((r) => setTimeout(r, delay * (i + 1)));
+          }
         }
       }
-    }
-    setLoading(false);
-  };
+      // Sab retries fail hone ke baad
+      setLoading(false);
+    };
 
-  fetchOrder();
-}, [orderId]);
-   
-/* ── Loading state ── */
-if (loading) {
-  return (
-    <div className="os-wrap">
-      <div className="os-glow-bg" />
-      <div className="os-grid-lines" />
+    fetchOrder();
+    // FIX 4: location ko dependency array mein add kiya
+  }, [orderId, location]);
 
-      <div className="os-content">
-        <div
-          style={{
-            marginTop: "120px",
-            textAlign: "center",
-          }}
-        >
-          <h2
-            style={{
-              color: "#00ff88",
-              fontFamily: "Syne",
-              fontSize: "32px",
-              marginBottom: "14px",
-            }}
-          >
-            Loading Order...
-          </h2>
-
-          <p
-            style={{
-              color: "rgba(255,255,255,0.6)",
-              fontSize: "14px",
-            }}
-          >
-            Please wait while we fetch your order details.
-          </p>
+  /* ── Loading state ── */
+  if (loading) {
+    return (
+      <div className="os-wrap">
+        <div className="os-glow-bg" />
+        <div className="os-grid-lines" />
+        <div className="os-content">
+          <div style={{ marginTop: "120px", textAlign: "center" }}>
+            <h2
+              style={{
+                color: "#00ff88",
+                fontFamily: "Syne, sans-serif",
+                fontSize: "32px",
+                marginBottom: "14px",
+              }}
+            >
+              Loading Order...
+            </h2>
+            <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "14px" }}>
+              Please wait while we fetch your order details.
+            </p>
+          </div>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
+
   /* ── Fallback if no order data ── */
   if (!order) {
     return (
@@ -682,7 +633,8 @@ if (loading) {
         <div className="os-glow-bg" />
         <div className="os-grid-lines" />
         <div className="os-content">
-          <div className="os-fallback" style={{ opacity: mounted ? 1 : 0, transition: "opacity 0.4s" }}>
+          {/* FIX 5: mounted state hataya, CSS animation hi kaafi hai */}
+          <div className="os-fallback">
             <div className="os-fallback-icon">📦</div>
             <h2>No Order Found</h2>
             <p>
@@ -717,17 +669,10 @@ if (loading) {
       <div className="os-grid-lines" />
 
       <div className="os-content">
-        {/* Brand */}
-      <div className="os-brand">
-        <img
-         src={logo}
-         alt="Logo"
-         style={{
-          height: "60px",
-         objectFit: "contain",
-          }}
-          />
-          </div>
+        {/* Brand / Logo */}
+        <div className="os-brand">
+          <img src={logo} alt="Logo" />
+        </div>
 
         {/* Animated success icon */}
         <div className="os-icon-ring">
@@ -762,9 +707,7 @@ if (loading) {
               <IconHash />
               Order ID
             </span>
-            <span className="os-row-val mono">
-              {order.orderId || "—"}
-            </span>
+            <span className="os-row-val mono">{order.orderId || "—"}</span>
           </div>
 
           <div className="os-row">
@@ -849,12 +792,10 @@ if (loading) {
 
         {/* CTA Buttons */}
         <div className="os-btn-group">
-  <button
-    className="os-btn os-btn-primary"
-    onClick={() =>
-      navigate(`/track/${order.orderId}`)
-    }
-  >
+          <button
+            className="os-btn os-btn-primary"
+            onClick={() => navigate(`/track/${order.orderId}`)}
+          >
             <IconTruck />
             Track Order
             <IconArrow />
@@ -878,8 +819,7 @@ if (loading) {
             "your registered email"
           )}
           .<br />
-          Need help?{" "}
-          <a href="/support">Contact Support</a>
+          Need help? <a href="/support">Contact Support</a>
         </p>
       </div>
     </div>
