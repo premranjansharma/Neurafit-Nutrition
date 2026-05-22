@@ -28,10 +28,11 @@ if (!Array.isArray(products)) return <div style={{textAlign:"center",padding:"80
       {/* HERO */}
       <div className="products-hero">
         <div className="products-hero__inner">
-          <span className="products-hero__tag">Our Products</span>
+          <span className="products-hero__tag">Our Goodmod</span>
           <h1 className="products-hero__title">Featured Products</h1>
           <p className="products-hero__desc">
-            Discover our premium varieties, crafted with care and premium ingredients.
+            Explore premium pre-workout and performance supplements
+        designed to support energy, focus, endurance, and workout intensity.
           </p>
         </div>
       </div>
@@ -81,13 +82,13 @@ if (!Array.isArray(products)) return <div style={{textAlign:"center",padding:"80
                   ) : (
                     <div className="products-card__img-placeholder">🌾</div>
                   )}
-                  <span className="products-card__weight">50g</span>
+                  <span className="products-card__weight"> 250g</span>
                 </div>
 
                 {/* INFO */}
                 <div className="products-card__body">
                   <span className="products-card__category">
-                    {product.category || "Ironfuel Nutrition"}
+                    {product.category || "Neurafit Nutrition"}
                   </span>
                   <h3 className="products-card__name">{product.name}</h3>
                   <p className="products-card__desc">{product.desc}</p>
@@ -122,18 +123,26 @@ if (!Array.isArray(products)) return <div style={{textAlign:"center",padding:"80
         <div className="products-about__inner">
           <div className="products-about__text">
             <h2>About Neurafit Nutrition</h2>
-            <p>
-            Neurafit Nutrition is built for those who refuse to settle for average. We are a performance driven nutrition brand dedicated to helping individuals unlock their true strength physically and mentally. Whether you're an athlete, a fitness enthusiast, or someone just starting your journey, IronFuel is designed to fuel your ambition.
-            </p>
+                   <p>
+          Neurafit Nutrition is built for individuals who
+          refuse to settle for average. We are a performance-driven
+          nutrition brand focused on helping athletes, gym enthusiasts,
+          and fitness-focused individuals unlock their true potential.
+          <br /><br />
+          Our advanced formulas are designed to support energy,
+          focus, endurance, strength, and workout performance
+          using carefully selected ingredients and modern nutrition science.
+        </p>
+
             <Link to="/about" className="products-about__btn">
               Learn More About Us →
             </Link>
           </div>
           <div className="products-about__badges">
-            <div className="products-about__badge">🌿 100% Natural</div>
-            <div className="products-about__badge">🚫 No Preservatives</div>
-            <div className="products-about__badge">💚 Gluten Free</div>
-            <div className="products-about__badge">⚡ High Protein</div>
+            <div className="products-about__badge">⚡ Performance Driven</div>
+            <div className="products-about__badge">🔥 Workout Energy</div>
+            <div className="products-about__badge">💪 Muscle Support</div>
+            <div className="products-about__badge">🧠 Focus & Endurance</div>
           </div>
         </div>
       </div>
