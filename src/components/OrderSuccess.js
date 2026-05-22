@@ -585,31 +585,45 @@ const OrderSuccess = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    injectStyles();
-    setMounted(true);
+  injectStyles();
+  setMounted(true);
 
-    const fetchOrder = async () => {
+  if (!orderId) {
+    setLoading(false);
+    return;
+  }
+
+  const fetchOrder = async (attempts = 3, delay = 1500) => {
+    for (let i = 0; i < attempts; i++) {
       try {
         const res = await fetch(
           `${process.env.REACT_APP_BASE_URL}/api/orders/track/${orderId}`
         );
 
-        const data = await res.json();
-
         if (res.ok) {
+          const data = await res.json();
           setOrder(data);
+          setLoading(false);
+          return;
+        }
+
+        if (i < attempts - 1) {
+          await new Promise((r) => setTimeout(r, delay * (i + 1)));
         }
       } catch (err) {
         console.error("Order fetch error:", err);
-      } finally {
-        setLoading(false);
+        if (i < attempts - 1) {
+          await new Promise((r) => setTimeout(r, delay * (i + 1)));
+        }
       }
-    };
-
-    if (orderId) {
-      fetchOrder();
     }
-  }, [orderId]);
+
+    setLoading(false);
+  };
+
+  fetchOrder();
+}, [orderId]);
+
    
 /* ── Loading state ── */
 if (loading) {
