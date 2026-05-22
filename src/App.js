@@ -99,7 +99,7 @@ function Home({ products }) {
         </div>
 
         <div className="hero-left">
-          <span className="hero-badge">100%</span>
+          <span className="hero-badge">Made For Peak Performance</span>
           <h1 className="hero-title">
             Godmode.<br />
             <span className="hero-title--accent">Live Better.</span>
@@ -110,13 +110,13 @@ function Home({ products }) {
           </p>
           <div className="hero-stats">
             <div className="hero-stat">
-              <span className="hero-stat__num">g</span>
-              <span className="hero-stat__label">Protein per 100g</span>
+              <span className="hero-stat__num">2600mg</span>
+              <span className="hero-stat__label">Beta Alanine</span>
             </div>
             <div className="hero-stat__divider" />
             <div className="hero-stat">
               <span className="hero-stat__num">0</span>
-              <span className="hero-stat__label">Preservatives</span>
+              <span className="hero-stat__label">Sugar</span>
             </div>
             <div className="hero-stat__divider" />
             <div className="hero-stat">
