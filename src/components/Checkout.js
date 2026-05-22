@@ -3,7 +3,7 @@ import { CartContext } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 
 // ✅ FIX 1: API_BASE — sab jagah consistent
-const API_BASE = process.env.REACT_APP_BASE_URL || "http://localhost:5000";
+const API_BASE = process.env.REACT_APP_BASE_URL;
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@300;400;500;600&display=swap');
@@ -343,7 +343,7 @@ const loadRazorpayScript = () =>
     document.body.appendChild(script);
   });
 
-// ✅ Helper: token header
+//  token header
 const authHeader = () => {
   const token = localStorage.getItem("token");
   return token ? { Authorization: `Bearer ${token}` } : {};
@@ -436,7 +436,7 @@ export default function Checkout() {
     };
   };
 
-  // ✅ FIX 4: Phone validation helper
+  //  Phone validation helper
   const validateForm = () => {
     if (!form.name.trim())    { alert("Name required");           return false; }
     if (!form.phone.trim())   { alert("Phone number required");   return false; }
@@ -475,24 +475,24 @@ export default function Checkout() {
 
     clearCart();
 
-    navigate("/order-success", {
-      state: {
-        order: {
-          orderId: data._id || data.orderId,
-          customerName: form.name,
-          customerEmail: form.email,
-          paymentStatus: "Pending",
-          orderDate: new Date().toISOString(),
-          estimatedDelivery: new Date(
-            Date.now() + 5 * 24 * 60 * 60 * 1000
-          ).toISOString(),
-          subtotal,
-          shipping: delivery,
-          total,
-          currency: "INR",
-        },
-      },
-    });
+navigate(`/order-success/${data.orderId}`, {
+  state: {
+    order: {
+      orderId: data.orderId,
+      customerName: form.name,
+      customerEmail: form.email,
+      paymentStatus: "Pending",
+      orderDate: new Date().toISOString(),
+      estimatedDelivery: new Date(
+        Date.now() + 5 * 24 * 60 * 60 * 1000
+      ).toISOString(),
+      subtotal,
+      shipping: delivery,
+      total,
+      currency: "INR",
+    },
+  },
+});
 
   } catch (err) {
     console.error(err);
@@ -603,7 +603,7 @@ export default function Checkout() {
 
   const handlePayment = () => {
     if (cart.length === 0)  { alert("Cart empty!"); return; }
-    if (!validateForm())     return; // ✅ FIX 4: proper validation
+    if (!validateForm())     return; //  proper validation
     paymentMethod === "COD" ? handleCOD() : handleRazorpay();
   };
 
