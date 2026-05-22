@@ -611,7 +611,44 @@ const OrderSuccess = () => {
     }
   }, [orderId]);
    
+/* ── Loading state ── */
+if (loading) {
+  return (
+    <div className="os-wrap">
+      <div className="os-glow-bg" />
+      <div className="os-grid-lines" />
 
+      <div className="os-content">
+        <div
+          style={{
+            marginTop: "120px",
+            textAlign: "center",
+          }}
+        >
+          <h2
+            style={{
+              color: "#00ff88",
+              fontFamily: "Syne",
+              fontSize: "32px",
+              marginBottom: "14px",
+            }}
+          >
+            Loading Order...
+          </h2>
+
+          <p
+            style={{
+              color: "rgba(255,255,255,0.6)",
+              fontSize: "14px",
+            }}
+          >
+            Please wait while we fetch your order details.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
   /* ── Fallback if no order data ── */
   if (!order) {
     return (
@@ -629,7 +666,7 @@ const OrderSuccess = () => {
             <button
               className="os-btn os-btn-primary"
               style={{ maxWidth: 280, margin: "0 auto" }}
-              onClick={() => navigate("/shop")}
+              onClick={() => navigate("/products")}
             >
               <IconShop />
               Back to Shop
@@ -786,10 +823,12 @@ const OrderSuccess = () => {
 
         {/* CTA Buttons */}
         <div className="os-btn-group">
-          <button
-            className="os-btn os-btn-primary"
-            onClick={() => navigate("/track-order", { state: { orderId: order.orderId } })}
-          >
+  <button
+    className="os-btn os-btn-primary"
+    onClick={() =>
+      navigate(`/track/${order.orderId}`)
+    }
+  >
             <IconTruck />
             Track Order
             <IconArrow />
@@ -797,7 +836,7 @@ const OrderSuccess = () => {
 
           <button
             className="os-btn os-btn-secondary"
-            onClick={() => navigate("/shop")}
+            onClick={() => navigate("/products")}
           >
             <IconShop />
             Continue Shopping
