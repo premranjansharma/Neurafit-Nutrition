@@ -294,7 +294,7 @@ useEffect(() => {
           <Route path="/terms"           element={<IronFuelTerms />} />
           <Route path="/admin/content" element={<ContentManager />} />
           <Route path="/products/:id" element={<ProductDetails />} />
-          <Route path="/order-success" element={<OrderSuccess />} />
+          <Route path="/order-success/:orderId"element={<OrderSuccess />}/>
 
 
           {/* ✅ /admin — login gate Admin.jsx ke andar hai */}
