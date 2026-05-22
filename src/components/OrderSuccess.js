@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import logo from "../assets/logo-nav.png";
 /* ─────────────────────────────────────────────
    Keyframe / global style injection
@@ -578,27 +578,40 @@ const IconShop = () => (
 ───────────────────────────────────────────── */
 const OrderSuccess = () => {
   const navigate = useNavigate();
-  const { orderId } = useParams();
+const { orderId } = useParams();
+const location = useLocation();
 
-  const [mounted, setMounted] = useState(false);
-  const [order, setOrder] = useState(null);
-  const [loading, setLoading] = useState(true);
+const [mounted, setMounted] = useState(false);
+const [order, setOrder] = useState(null);
+const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+useEffect(() => {
   injectStyles();
   setMounted(true);
 
+  // Checkout से state आई है तो सीधे use करो
+  if (location.state?.order) {
+    setOrder(location.state.order);
+    setLoading(false);
+    return;
+  }
+
+  // अगर user directly URL खोले तो API call करो
   if (!orderId) {
     setLoading(false);
     return;
   }
 
   const fetchOrder = async (attempts = 3, delay = 1500) => {
+    const email = location.state?.order?.customerEmail || "";
+
     for (let i = 0; i < attempts; i++) {
       try {
-        const res = await fetch(
-          `${process.env.REACT_APP_BASE_URL}/api/orders/track/${orderId}`
-        );
+        const url = email
+          ? `${process.env.REACT_APP_BASE_URL}/api/orders/track/${orderId}?email=${encodeURIComponent(email)}`
+          : `${process.env.REACT_APP_BASE_URL}/api/orders/track/${orderId}`;
+
+        const res = await fetch(url);
 
         if (res.ok) {
           const data = await res.json();
@@ -617,13 +630,11 @@ const OrderSuccess = () => {
         }
       }
     }
-
     setLoading(false);
   };
 
   fetchOrder();
 }, [orderId]);
-
    
 /* ── Loading state ── */
 if (loading) {
