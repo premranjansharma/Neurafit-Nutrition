@@ -1,3 +1,4 @@
+[eslint] 
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import logo from "../assets/logo-nav.png";
