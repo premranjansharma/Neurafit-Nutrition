@@ -111,22 +111,22 @@ function Home({ products }) {
           <div className="hero-stats">
             <div className="hero-stat">
               <span className="hero-stat__num">2600mg</span>
+              <span className="hero-stat__label">L-Arginine</span>
+            </div>
+            <div className="hero-stat__divider" />
+            <div className="hero-stat">
+              <span className="hero-stat__num">2600mg</span>
               <span className="hero-stat__label">Beta Alanine</span>
             </div>
             <div className="hero-stat__divider" />
             <div className="hero-stat">
-              <span className="hero-stat__num">0</span>
-              <span className="hero-stat__label">Sugar</span>
-            </div>
-            <div className="hero-stat__divider" />
-            <div className="hero-stat">
-              <span className="hero-stat__num">2</span>
-              <span className="hero-stat__label">Flavors</span>
+              <span className="hero-stat__num">250mg</span>
+              <span className="hero-stat__label">Caffeine</span>
             </div>
           </div>
           <div className="hero-btns">
-            <Link to="/products" className="hero-btn hero-btn--primary">Shop Now</Link>
-            <Link to="/health" className="hero-btn hero-btn--secondary">Health Benefits</Link>
+            <Link to="/products" className="hero-btn hero-btn--primary">Shop Godmode</Link>
+            <Link to="/health" className="hero-btn hero-btn--secondary">Explore Benefits</Link>
           </div>
         </div>
 
