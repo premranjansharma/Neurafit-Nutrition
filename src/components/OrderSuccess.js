@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import logo from "../assets/logo-nav.png";
 /* ─────────────────────────────────────────────
    Keyframe / global style injection
@@ -578,15 +578,39 @@ const IconShop = () => (
 ───────────────────────────────────────────── */
 const OrderSuccess = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const order = location.state?.order;
+  const { orderId } = useParams();
 
   const [mounted, setMounted] = useState(false);
+  const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     injectStyles();
     setMounted(true);
-  }, []);
+
+    const fetchOrder = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.REACT_APP_BASE_URL}/api/orders/track/${orderId}`
+        );
+
+        const data = await res.json();
+
+        if (res.ok) {
+          setOrder(data);
+        }
+      } catch (err) {
+        console.error("Order fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (orderId) {
+      fetchOrder();
+    }
+  }, [orderId]);
+   
 
   /* ── Fallback if no order data ── */
   if (!order) {
