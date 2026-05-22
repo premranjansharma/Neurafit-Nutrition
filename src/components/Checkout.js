@@ -563,22 +563,24 @@ navigate(`/order-success/${data.orderId}`, {
           if (!ordRes.ok) { alert(ordData.message || "Order save nahi hua."); setLoading(false); return; }
 
           clearCart();
-          navigate("/order-success", {
-            state: {
-              order: {
-                orderId          : ordData._id || ordData.orderId,
-                customerName     : form.name,
-                customerEmail    : form.email,
-                paymentStatus    : "Paid",
-                orderDate        : new Date().toISOString(),
-                estimatedDelivery: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
-                subtotal,
-                shipping         : delivery,
-                total,
-                currency         : "INR",
-              },
-            },
-          });
+          navigate(`/order-success/${ordData.orderId}`, {
+  state: {
+    order: {
+      orderId: ordData.orderId,
+      customerName: form.name,
+      customerEmail: form.email,
+      paymentStatus: "Paid",
+      orderDate: new Date().toISOString(),
+      estimatedDelivery: new Date(
+        Date.now() + 5 * 24 * 60 * 60 * 1000
+      ).toISOString(),
+      subtotal,
+      shipping: delivery,
+      total,
+      currency: "INR",
+    },
+  },
+});
 
         } catch (err) {        // ← closes handler's try
           console.error(err);
