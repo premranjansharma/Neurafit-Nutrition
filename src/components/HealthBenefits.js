@@ -373,3 +373,7 @@ export default function HealthBenefits() {
     </a>
   </div>
 </div>
+
+  </div>
+  );
+}
