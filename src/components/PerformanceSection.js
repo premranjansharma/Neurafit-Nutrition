@@ -47,7 +47,7 @@ export default function PerformanceSection() {
     <>
       <style>{`
         .perf-section {
-          background: linear-gradient(160deg, #040b16 0%, #07192e 60%, #0b1020 100%);
+          background: linear-gradient(160deg, #1c4506 0%, #01321a 60%, #095e15 100%);
           padding: 80px 24px;
           text-align: center;
           position: relative;
