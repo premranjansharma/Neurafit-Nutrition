@@ -221,10 +221,19 @@ function Footer({ setSubscribers }) {
       </div>
 
       <div className="footer-bottom">
-        <p>2026 Neurafit Nutrition. All rights reserved.</p>
-        <p1>Built by <strong>XTYLE TECHNOLOGY</strong></p1>
-      </div>
-    </div>
+  <p>2026 Neurafit Nutrition. All rights reserved.</p>
+
+  <p>
+    Built by{" "}
+    <a
+      href="https://xtyletechnology.com"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <strong>XTYLE TECHNOLOGY</strong>
+    </a>
+  </p>
+</div>
   );
 }
 
