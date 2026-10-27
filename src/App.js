@@ -224,7 +224,7 @@ function Footer({ setSubscribers }) {
   <p>2026 Neurafit Nutrition. All rights reserved.</p>
 
   <p>
-    Built by{" "}
+    Powered by{" "}
     <a
       href="https://xtyletechnology.com"
       target="_blank"
